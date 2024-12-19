@@ -3,10 +3,11 @@
 @tailwind utilities;
 
 body {
-    background-image: url('./assets/images/windows95bglogo.png') no-repeat center center;
     background-size: 350px auto;
     background-color: #008080;
     margin: 0;
     height: 100vh;
+    cursor: url('./assets/cursors/arrow0.png'), default;
+    overflow: hidden;
   }
   
