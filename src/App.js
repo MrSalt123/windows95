@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
-  Button,
-  styleReset,
-  MenuList,
-  MenuListItem,
-  TextInput,
+    Button,
+    styleReset,
+    MenuList,
+    MenuListItem,
+    TextInput,
 } from "react95";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import win95Logo from "./assets/images/win95.png";
@@ -46,19 +46,19 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
-  const [time, setTime] = useState("");
-  const [startMenuOpen, setStartMenuOpen] = useState(false);
+    const [time, setTime] = useState("");
+    const [startMenuOpen, setStartMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      setTime(`${hours}:${minutes}`);
-    }, 1000);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            setTime(`${hours}:${minutes}`);
+        }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+        return () => clearInterval(interval);
+    }, []);
 
   return (
     <div>
@@ -304,9 +304,9 @@ const App = () => {
             }}>{time}</Button>
           </div>
         </div>
-      </ThemeProvider>
+        </ThemeProvider>
     </div>
-  );
+    );
 };
 
 export default App;
