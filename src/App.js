@@ -8,10 +8,11 @@ import {
 } from "react95";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import win95Logo from "./assets/images/win95.png";
-import bgImage from "./assets/images/windowsbackground.jpg";
+import bgImage from "./assets/images/windowsbackground_2.png";
 import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
+import console from "./assets/images/console_prompt-0.png";
 
 /* Pick a theme of your choice */
 import original from "react95/dist/themes/original";
@@ -64,28 +65,113 @@ const App = () => {
       <GlobalStyles />
       <ThemeProvider theme={original}>
         {/* Desktop Icons */}
-        <div className="ml-3 mt-3">
-          <img
-            src={notepad}
-            alt="About Icon"
-            className="h-10 mb-1"
-            onClick={() => alert("Notepad clicked")}
-          />
-          <span style={{ fontSize: "0.8rem", textAlign: "center" }}>About</span>
+        <div
+          style={{
+            position: "absolute",
+            top: "10%",
+            left: "20px",
+            color: "white",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: "30px",
+          }}
+        >
+          {/* Terminal Icon */}
+          <div
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "background-color 0.1 ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            <img
+              src={console}
+              alt="Console Icon"
+              style={{ width: "85px", height: "auto" }}
+              onClick={() => alert("Console clicked")}
+            />
+            <span style={{ fontSize: "1.1rem" }}>Terminal</span>
+          </div>
 
-          <img
-            src={globe}
-            alt="Globe Icon"
-            className="h-10 mb-1"
-          />
-          <span style={{ fontSize: "0.8rem", textAlign: "center" }}>Roadmap</span>
+          {/* About Icon */}
+          <div
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "background-color 0.1s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            <img
+              src={notepad}
+              alt="Notepad Icon"
+              style={{ width: "85px", height: "auto" }}
+              onClick={() => alert("Notepad clicked")}
+            />
+            <span style={{ fontSize: "1.1rem" }}>About</span>
+          </div>
 
-          <img
-            src={search}
-            alt="Contact Icon"
-            className="h-10 mb-1"
-          />
-          <span style={{ fontSize: "0.8rem", textAlign: "center" }}>Contact</span>
+          {/* Roadmap Icon */}
+          <div
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "background-color 0.1s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            <img
+              src={globe}
+              alt="Globe Icon"
+              style={{ width: "85px", height: "auto" }}
+              onClick={() => alert("Roadmap clicked")}
+            />
+            <span style={{ fontSize: "1.1rem" }}>Roadmap</span>
+          </div>
+
+          {/* Contact Icon */}
+          <div
+            style={{
+              padding: "10px",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "background-color 0.1s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            <img
+              src={search}
+              alt="Search Icon"
+              style={{ width: "85px", height: "auto" }}
+              onClick={() => alert("Contact clicked")}
+            />
+            <span style={{ fontSize: "1.1rem" }}>Contact</span>
+          </div>
         </div>
 
         {/* Taskbar */}
@@ -94,60 +180,128 @@ const App = () => {
             position: "fixed",
             bottom: 0,
             width: "100vw",
-            height: "40px",
+            height: "90px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             backgroundColor: "#c0c0c0",
             borderTop: "2px solid #ffffff",
             borderBottom: "2px solid #808080",
+            padding: "0 10px",
           }}
         >
-          {/* Left side: Start Button and Menu Items */}
-          <div style={{ position: "relative", display: "flex", alignItems: "center", paddingLeft: "5px" }}>
+          {/* Left side: Start Button and Search Bar */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
             <Button
               onClick={() => setStartMenuOpen(!startMenuOpen)}
               active={startMenuOpen}
-              style={{ fontWeight: "bold", marginRight: "10px" }}
+              style={{
+                fontWeight: "bold",
+                height: "70px",
+                width: "150px",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
               <img
                 src={win95Logo}
                 alt="Start Icon"
-                style={{ height: "20px", marginRight: "5px" }}
+                style={{
+                  height: "60px",
+                  marginRight: "10px",
+                }}
               />
-              Start
+              <p style={{fontSize: "1.4rem"}}>Start</p>
             </Button>
-            <div style={{ display: "flex", gap: "15px" }}>
-                            <TextInput
-                                variant='flat'
-                                placeholder='Search...'
-                                width={150}
-                                fullWidth
-                            />
-                        </div>
+
+
             {startMenuOpen && (
               <MenuList
                 style={{
                   position: "absolute",
-                  bottom: "40px",
+                  width: "410px",
+                  bottom: "90px",
                   left: "0",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "stretch",
                 }}
-                onClick={() => setStartMenuOpen(false)}
               >
-                <MenuListItem onClick={() => alert("X clicked")}>X</MenuListItem>
-                <MenuListItem onClick={() => alert("Telegram clicked")}>
-                  Telegram
-                </MenuListItem>
-                <MenuListItem onClick={() => alert("DexScreener clicked")}>
-                  DexScreener
-                </MenuListItem>
+                {/* Rotated Windows 95 Banner */}
+                <div
+                  style={{
+                    // add other font family
+  
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "80px",
+                    backgroundColor: "#008080",
+                    color: "#c0c0c0",
+                    writingMode: "vertical-rl",
+                    transform: "rotate(180deg)",
+                    fontSize: "3rem", 
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  <p>Windows</p><p style={{color: "white"}}> 95</p>
+                </div>
+
+                {/* Menu Items */}
+                <div
+                  style={{
+                    flex: "1",
+                    backgroundColor: "#C1C1C1F",
+
+                  }}
+                >
+                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("X clicked")}>
+                  <p style={{transform: "translateX(20px)"}}>X</p>
+                  </MenuListItem>
+
+                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("Telegram clicked")}>
+                    <p style={{transform: "translateX(20px)"}}>Telegram</p>
+                  </MenuListItem>
+
+                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("DexScreener clicked")}>
+                    <p style={{transform: "translateX(20px)"}}>DexScreener</p>
+                  </MenuListItem>
+
+                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("Pumpfun clicked")}>
+                    <p style={{transform: "translateX(20px)"}}>PumpFun</p>
+                  </MenuListItem>
+                </div>
               </MenuList>
             )}
+
+            <TextInput
+              variant="flat"
+              placeholder="Search..."
+              width={200}
+              style={{
+                height: "70px",
+                width: "320px",
+              }}
+            />
           </div>
 
           {/* Right side: Clock */}
-          <div style={{ paddingRight: "10px" }}>
-            <Button active>{time}</Button>
+          <div style={{ 
+            paddingRight: "4px",
+             }}>
+            <Button active style={{
+              height: "70px",
+              width: "100px",
+              fontSize: "1.3rem"
+          
+            }}>{time}</Button>
           </div>
         </div>
       </ThemeProvider>
