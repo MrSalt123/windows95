@@ -1,5 +1,7 @@
 /***************************************************************************
  *                           IMPORTS & GLOBAL SETUP
+ * This section imports all dependencies, themes, fonts, images, and sets 
+ * up the global styling. It also imports components from React95.
  ***************************************************************************/
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -10,23 +12,29 @@ import {
   TextInput,
 } from "react95";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+
+/* Images & Icons */
 import win95Logo from "./assets/images/win95.png";
 import bgImage from "./assets/images/windows95bglogo.png";
 import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
-import console from "./assets/images/console_prompt-0.png";
+import consoleIcon from "./assets/images/console_prompt-0.png";
 import pumpIco from "./assets/images/pump-ico.png";
 import xIco from "./assets/images/x-ico.png";
 import teleIco from "./assets/images/tele-ico.png";
 import cursor from "./assets/cursors/arrow0.png";
 import hand from "./assets/cursors/hand0.png";
+
+/* Theme & Fonts */
 import original from "react95/dist/themes/original";
 import ms_sans_serif from "react95/dist/fonts/ms_sans_serif.woff2";
 import ms_sans_serif_bold from "react95/dist/fonts/ms_sans_serif_bold.woff2";
 
 /***************************************************************************
  *                          GLOBAL STYLES
+ * Applies the Windows 95 style reset and fonts, sets up the background and 
+ * cursors, and ensures no scrollbars.
  ***************************************************************************/
 const GlobalStyles = createGlobalStyle`
   ${styleReset}
@@ -37,7 +45,6 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 400;
     font-style: normal;
   }
-
   @font-face {
     font-family: 'ms_sans_serif';
     src: url('${ms_sans_serif_bold}') format('woff2');
@@ -54,7 +61,7 @@ const GlobalStyles = createGlobalStyle`
     cursor: url(${cursor}), auto;
     width: 100dvw;
     height: 100dvh;
-    overflow: hidden; /* Ensure no scrollbars interfere */
+    overflow: hidden;
   }
 
   button, [role='button'], a, .pointer {
@@ -73,6 +80,8 @@ const GlobalStyles = createGlobalStyle`
 
 /***************************************************************************
  *                           MODAL COMPONENT
+ * Reusable modal window that can show different content, menu bars, and 
+ * status bars. Supports dragging, resizing, and custom styling.
  ***************************************************************************/
 const ModalWindow = ({
   title,
@@ -92,16 +101,14 @@ const ModalWindow = ({
   customTitleBar,
 }) => {
   const modalRef = useRef(null);
-
   if (!isOpen) return null;
 
+  // Handle resizing
   const startResizing = (e) => {
     e.stopPropagation();
     e.preventDefault();
-
     const startX = e.clientX;
     const startY = e.clientY;
-
     const startW = modalWidth;
     const startH = modalHeight;
 
@@ -116,11 +123,11 @@ const ModalWindow = ({
       document.removeEventListener("mousemove", doDrag);
       document.removeEventListener("mouseup", stopDrag);
     };
-
     document.addEventListener("mousemove", doDrag);
     document.addEventListener("mouseup", stopDrag);
   };
 
+  // Handle dragging by title bar
   const handleMouseDown = (e) => {
     const modal = modalRef.current;
     const offsetX = e.clientX - modal.getBoundingClientRect().left;
@@ -136,7 +143,6 @@ const ModalWindow = ({
       document.removeEventListener("mouseup", stopDragging);
     };
 
-    // Drag only if we clicked in the title bar area
     if (e.target.closest(".modal-titlebar")) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", stopDragging);
@@ -168,12 +174,10 @@ const ModalWindow = ({
         zIndex: 1000,
         display: isVisible ? "flex" : "none",
         flexDirection: "column",
-        // Removed cursor default; only titlebar is draggable
         ...customStyles.container,
       }}
       onMouseDown={handleMouseDown}
     >
-      {/* Title Bar */}
       <div
         className="modal-titlebar"
         style={{
@@ -209,7 +213,6 @@ const ModalWindow = ({
         </button>
       </div>
 
-      {/* Menu Bar (optional) */}
       {showMenuBar && (
         <div
           style={{
@@ -222,31 +225,19 @@ const ModalWindow = ({
             ...customStyles.menuBar,
           }}
         >
-          {customMenuBar ? (
-            customMenuBar
-          ) : (
+          {customMenuBar ? customMenuBar : (
             <>
-              <span style={{ marginRight: "15px" }} className="pointer">
-                File
-              </span>
-              <span style={{ marginRight: "15px" }} className="pointer">
-                Edit
-              </span>
-              <span style={{ marginRight: "15px" }} className="pointer">
-                Search
-              </span>
-              <span style={{ marginRight: "15px" }} className="pointer">
-                Help
-              </span>
+              <span style={{ marginRight: "15px" }} className="pointer">File</span>
+              <span style={{ marginRight: "15px" }} className="pointer">Edit</span>
+              <span style={{ marginRight: "15px" }} className="pointer">Search</span>
+              <span style={{ marginRight: "15px" }} className="pointer">Help</span>
             </>
           )}
         </div>
       )}
 
-      {/* Content Area */}
       <div style={mainAreaStyles}>{content}</div>
 
-      {/* Status Bar (optional) */}
       {showStatusBar && (
         <div
           style={{
@@ -263,9 +254,7 @@ const ModalWindow = ({
             ...customStyles.statusBar,
           }}
         >
-          {customStatusBar ? (
-            customStatusBar
-          ) : (
+          {customStatusBar ? customStatusBar : (
             <>
               <span>Ln 1, Col 1</span>
               <span>100%</span>
@@ -274,7 +263,6 @@ const ModalWindow = ({
         </div>
       )}
 
-      {/* Resizer Handle */}
       <div
         onMouseDown={startResizing}
         style={{
@@ -294,30 +282,157 @@ const ModalWindow = ({
 };
 
 /***************************************************************************
- *                           DESKTOP ITEMS CONFIG
+ * TOP INDICATORS (DEXSCREENER VERSION)
+ * This component fetches the token's price and 24-hour performance from a 
+ * DexScreener pair endpoint. It displays price & 24h change top-left, and 
+ * a contract address with a copy button top-right.
  ***************************************************************************/
 
-// Custom MS Paint style menu bar for Roadmap
+
+/*
+  Replace '3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz' with your actual pair address 
+  from DexScreener. The one below is from your snippet.
+*/
+const DEXSCREENER_PAIR_ADDRESS = "3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz"; 
+const CONTRACT_ADDRESS = "G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump";
+
+const TopIndicators = () => {
+  const [price, setPrice] = useState("Loading...");
+  const [priceChange, setPriceChange] = useState(0);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDexScreenerData = async () => {
+      try {
+        const url = `https://api.dexscreener.com/latest/dex/pairs/solana/${DEXSCREENER_PAIR_ADDRESS}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`HTTP Error: ${res.status}`);
+        }
+        const data = await res.json();
+        
+        // Check if the data has 'pair' info
+        if (!data || !data.pair) {
+          throw new Error("No pair data found");
+        }
+
+        const currentPrice = parseFloat(data.pair.priceUsd);
+        const change24h = data.pair.priceChange ? data.pair.priceChange.h24 : 0;
+        
+        setPrice(currentPrice.toFixed(6)); // 6 decimals or adjust as needed
+        setPriceChange(change24h);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching from DexScreener:", err);
+        setPrice("Error");
+        setPriceChange(0);
+        setError(err.message);
+      }
+    };
+
+    fetchDexScreenerData();
+    const interval = setInterval(fetchDexScreenerData, 30000); // Refresh every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  let changeColor = 'white';
+  if (priceChange > 0) changeColor = 'green';
+  else if (priceChange < 0) changeColor = 'red';
+
+  const formattedChange = `${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%`;
+
+  const shortAddress = `${CONTRACT_ADDRESS.slice(0,6)}...${CONTRACT_ADDRESS.slice(-4)}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(CONTRACT_ADDRESS)
+      .then(() => alert('Address copied!'))
+      .catch((err) => console.error('Could not copy address:', err));
+  };
+
+  return (
+    <>
+      {/* Top-left Price & 24h Performance */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '30px',
+          left: '30px',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'baseline',
+          fontWeight: "lighter",
+          gap: '10px',
+          zIndex: 9999,
+        }}
+      >
+        <span style={{ fontSize: '1.1rem', color: 'white' }}>
+          {price}
+        </span>
+        {!error && (
+          <span style={{transform:"translateY(-10px)", fontSize: '0.8rem', color: changeColor }}>
+            {formattedChange}
+          </span>
+        )}
+      </div>
+
+      {/* Top-right Contract Address + Copy Button */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '30px',
+          right: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          fontFamily: 'ms_sans_serif',
+          zIndex: 9999,
+        }}
+      >
+
+        <Button
+          style={{ 
+            color: "white",
+            fontWeight: "bold",
+            fontSize: '1.0rem', 
+            height: '30px', 
+            width: "70px",
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center' }}
+          onClick={copyToClipboard}
+        >
+          Copy
+        </Button>
+
+        <span 
+          style={{
+            color: "white",
+            width: "100px",
+            padding: '2px 4px', 
+            fontSize: '1rem' 
+          }}
+        >
+          {shortAddress}
+        </span>
+      </div>
+    </>
+  );
+};
+
+
+
+
+/***************************************************************************
+ * DESKTOP ITEMS CONFIG
+ ***************************************************************************/
 const msPaintMenuBar = (
   <>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      File
-    </span>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      Edit
-    </span>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      View
-    </span>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      Image
-    </span>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      Colors
-    </span>
-    <span style={{ marginRight: "15px" }} className="pointer">
-      Help
-    </span>
+    <span style={{ marginRight: "15px" }} className="pointer">File</span>
+    <span style={{ marginRight: "15px" }} className="pointer">Edit</span>
+    <span style={{ marginRight: "15px" }} className="pointer">View</span>
+    <span style={{ marginRight: "15px" }} className="pointer">Image</span>
+    <span style={{ marginRight: "15px" }} className="pointer">Colors</span>
+    <span style={{ marginRight: "15px" }} className="pointer">Help</span>
   </>
 );
 
@@ -332,7 +447,7 @@ const desktopItems = [
   {
     id: "terminal",
     name: "Terminal",
-    icon: console,
+    icon: consoleIcon,
     content: (
       <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <p>Type commands here...</p>
@@ -369,8 +484,7 @@ const desktopItems = [
           About This App
         </h1>
         <p style={{ lineHeight: "1.5", color: "black" }}>
-          This is a Windows 95-inspired UI built with React95. It mimics the look
-          and feel of classic Windows 95 applications, like Notepad.
+          This is a Windows 95-inspired UI built with React95.
         </p>
       </>
     ),
@@ -382,19 +496,17 @@ const desktopItems = [
     id: "roadmap",
     name: "Roadmap",
     icon: globe,
-    // MS Paint style content: grey background, a white "canvas" area
     content: (
       <div
         style={{
           flex: 1,
-          backgroundColor: "#c0c0c0", // typical MS Paint background gray
+          backgroundColor: "#c0c0c0",
           display: "flex",
           flexDirection: "column",
           padding: "10px",
           gap: "10px",
         }}
       >
-        {/* Simulated Paint Toolbox area */}
         <div
           style={{
             height: "30px",
@@ -404,11 +516,8 @@ const desktopItems = [
             display: "inline-block",
           }}
         >
-          {/* A simple toolbox placeholder */}
           <span>Tools</span>
         </div>
-
-        {/* The "canvas" area */}
         <div
           style={{
             flex: 1,
@@ -416,11 +525,8 @@ const desktopItems = [
             border: "2px inset #808080",
           }}
         >
-          {/* Canvas placeholder */}
           <p style={{ margin: "10px", color: "black" }}>Draw something here...</p>
         </div>
-
-        {/* A color palette placeholder */}
         <div
           style={{
             height: "30px",
@@ -446,7 +552,6 @@ const desktopItems = [
     customStatusBar: msPaintStatusBar,
     customStyles: {
       main: {
-        // We'll rely on content to set background
         backgroundColor: "#c0c0c0",
         color: "black",
       },
@@ -468,33 +573,30 @@ const desktopItems = [
     showStatusBar: true,
     customMenuBar: (
       <>
-        <span style={{ marginRight: "15px" }} className="pointer">
-          Contact
-        </span>
-        <span style={{ marginRight: "15px" }} className="pointer">
-          Help
-        </span>
+        <span style={{ marginRight: "15px" }} className="pointer">Contact</span>
+        <span style={{ marginRight: "15px" }} className="pointer">Help</span>
       </>
     ),
     customStyles: {
       main: {
-        backgroundColor: "#fff8e1", // Light yellow background
+        backgroundColor: "#fff8e1",
       },
     },
   },
 ];
 
 /***************************************************************************
- *                             MAIN APP COMPONENT
+ * MAIN APP COMPONENT
+ * Integrates global styles, top indicators, wallpaper, desktop icons, 
+ * taskbar, modals, etc.
  ***************************************************************************/
 const App = () => {
   const [time, setTime] = useState("");
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
   const menuRef = useRef(null);
 
-  // Initialize modals state
+  // Initialize modal states
   const initialState = {};
   desktopItems.forEach((item) => {
     initialState[item.id] = {
@@ -504,28 +606,19 @@ const App = () => {
       height: 400,
     };
   });
-
   const [openModals, setOpenModals] = useState(initialState);
 
   const handleIconClick = (id) => {
     setOpenModals((prev) => ({
       ...prev,
-      [id]: {
-        ...prev[id],
-        isOpen: true,
-        isVisible: true,
-      },
+      [id]: { ...prev[id], isOpen: true, isVisible: true },
     }));
   };
 
   const closeModal = (id) => {
     setOpenModals((prev) => ({
       ...prev,
-      [id]: {
-        ...prev[id],
-        isOpen: false,
-        isVisible: false,
-      },
+      [id]: { ...prev[id], isOpen: false, isVisible: false },
     }));
   };
 
@@ -551,7 +644,7 @@ const App = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Close start menu on outside click
+  // Close start menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -566,7 +659,7 @@ const App = () => {
     };
   }, [startMenuOpen]);
 
-  // Track window width
+  // Track window width changes
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -577,6 +670,11 @@ const App = () => {
     <div>
       <GlobalStyles />
       <ThemeProvider theme={original}>
+
+        {/* TOP INDICATORS: Mint Price & Contract */}
+        <TopIndicators />
+
+        {/* Wallpaper */}
         <img
           src={bgImage}
           style={{
@@ -612,13 +710,8 @@ const App = () => {
                 textAlign: "center",
                 transition: "background-color 0.1s ease",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background =
-                  "rgba(255, 255, 255, 0.3)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "transparent")
-              }
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               className="pointer"
             >
               <img
@@ -652,7 +745,7 @@ const App = () => {
             padding: "0 10px",
           }}
         >
-          {/* Left side: Start Button & Search Bar */}
+          {/* Start Button & Search */}
           <div
             style={{
               display: "flex",
@@ -727,9 +820,7 @@ const App = () => {
                 >
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open("https://x.com/windows95cto", "_blank")
-                    }
+                    onClick={() => window.open("https://x.com/windows95cto", "_blank")}
                   >
                     <img
                       src={xIco}
@@ -745,9 +836,7 @@ const App = () => {
 
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open("https://t.me/windows95ctosol", "_blank")
-                    }
+                    onClick={() => window.open("https://t.me/windows95ctosol", "_blank")}
                   >
                     <img
                       src={teleIco}
@@ -762,15 +851,10 @@ const App = () => {
 
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open(
-                        "https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz",
-                        "_blank"
-                      )
-                    }
+                    onClick={() => window.open("https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz", "_blank")}
                   >
                     <img
-                      src={console}
+                      src={consoleIcon}
                       style={{
                         position: "absolute",
                         width: "20px",
@@ -778,19 +862,12 @@ const App = () => {
                       }}
                       alt="Console Icon"
                     />
-                    <p style={{ transform: "translateX(50px)" }}>
-                      DexScreener
-                    </p>
+                    <p style={{ transform: "translateX(50px)" }}>DexScreener</p>
                   </MenuListItem>
 
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open(
-                        "https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump",
-                        "_blank"
-                      )
-                    }
+                    onClick={() => window.open("https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump", "_blank")}
                   >
                     <img
                       src={pumpIco}
@@ -818,7 +895,7 @@ const App = () => {
             />
           </div>
 
-          {/* CENTER: RENDER OPEN WINDOWS AS TABS */}
+          {/* Taskbar Tabs (Modals) */}
           <div
             style={{
               display: "flex",
@@ -872,7 +949,7 @@ const App = () => {
             })}
           </div>
 
-          {/* Right side: Clock Display */}
+          {/* Clock */}
           <div style={{ paddingRight: "4px" }}>
             <div
               style={{
@@ -894,7 +971,7 @@ const App = () => {
             </div>
           </div>
 
-          {/* Render Modals */}
+          {/* Render All Modals */}
           {desktopItems.map((item) => {
             const modalState = openModals[item.id];
             return (
@@ -907,17 +984,17 @@ const App = () => {
                 onClose={() =>
                   setOpenModals((prev) => ({
                     ...prev,
-                    [item.id]: {
-                      ...prev[item.id],
-                      isOpen: false,
-                      isVisible: false,
-                    },
+                    [item.id]: { ...prev[item.id], isOpen: false, isVisible: false },
                   }))
                 }
                 modalWidth={modalState.width}
                 modalHeight={modalState.height}
-                setModalWidth={(w) => setModalSize(item.id, w, modalState.height)}
-                setModalHeight={(h) => setModalSize(item.id, modalState.width, h)}
+                setModalWidth={(w) =>
+                  setModalSize(item.id, w, modalState.height)
+                }
+                setModalHeight={(h) =>
+                  setModalSize(item.id, modalState.width, h)
+                }
                 customStyles={item.customStyles}
                 showMenuBar={item.showMenuBar}
                 showStatusBar={item.showStatusBar}
