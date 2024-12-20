@@ -1,8 +1,5 @@
 /***************************************************************************
  *                           IMPORTS & GLOBAL SETUP
- * This section imports all required dependencies, sets up fonts, and applies
- * global styling for our Windows 95 themed UI. It includes React, React95 
- * components, styled-components, images, cursors, and font definitions.
  ***************************************************************************/
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -19,23 +16,17 @@ import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
 import console from "./assets/images/console_prompt-0.png";
-
 import pumpIco from "./assets/images/pump-ico.png";
 import xIco from "./assets/images/x-ico.png";
 import teleIco from "./assets/images/tele-ico.png";
-
 import cursor from "./assets/cursors/arrow0.png";
 import hand from "./assets/cursors/hand0.png";
 import original from "react95/dist/themes/original";
 import ms_sans_serif from "react95/dist/fonts/ms_sans_serif.woff2";
 import ms_sans_serif_bold from "react95/dist/fonts/ms_sans_serif_bold.woff2";
-import { shadow } from "react95/dist/common";
 
 /***************************************************************************
  *                          GLOBAL STYLES
- * We reset default browser styles, define fonts, and set the application’s 
- * background, cursors, and general aesthetic. Also configures buttons, links, 
- * and other clickable elements to use a custom Windows 95 hand cursor.
  ***************************************************************************/
 const GlobalStyles = createGlobalStyle`
   ${styleReset}
@@ -60,7 +51,6 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     margin: 0;
-
     cursor: url(${cursor}), auto;
     width: 100dvw;
     height: 100dvh;
@@ -69,64 +59,46 @@ const GlobalStyles = createGlobalStyle`
   button, [role='button'], a, .pointer {
     cursor: url(${hand}), pointer;
   }
+
+  img {
+    user-drag: none;  
+    user-select: none;
+   -moz-user-select: none;
+   -webkit-user-drag: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+  }
 `;
 
 /***************************************************************************
  *                             MAIN APP COMPONENT
- * The App component sets up the Windows 95-style desktop environment,
- * including:
- *  - A dynamic clock in the taskbar
- *  - Icons on the desktop (Terminal, About, Roadmap, Contact)
- *  - A movable "About" modal window, triggered by the About icon
- *  - The start menu with links to various external resources
- *
- * State variables manage the open/close states of menus and modals, and 
- * useEffect hooks keep the clock updated and handle outside-click logic 
- * for closing the start menu.
  ***************************************************************************/
 const App = () => {
-  /*************************************************************************
-   *                             STATE & REF HOOKS
-   * time:          Stores the current time in "HH:MM" format.
-   * startMenuOpen: Boolean flag to show/hide the Start Menu.
-   * isModalOpen:   Boolean flag to show/hide the About Modal.
-   * menuRef:       A reference to the menu element for outside-click detection.
-   *
-   * windowWidth:   Tracks the current window width to conditionally show/hide 
-   *                the "Start" text in the start button.
-   *************************************************************************/
   const [time, setTime] = useState("");
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+
+  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Track modal size
+  const [modalWidth, setModalWidth] = useState(400);
+  const [modalHeight, setModalHeight] = useState(400);
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const menuRef = useRef(null);
 
-  /*************************************************************************
-   *                           EVENT HANDLERS
-   * handleAboutClick: Opens the About Modal when the "About" icon is clicked.
-   * closeModal:       Closes the About Modal.
-   *************************************************************************/
   const handleAboutClick = () => {
     setIsModalOpen(true);
+    setIsModalVisible(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsModalVisible(false);
   };
 
-  /*************************************************************************
-   *                           EFFECT HOOKS
-   * 1. Clock Update Effect:
-   *    Sets an interval to update 'time' every second, formatting hours 
-   *    and minutes as "HH:MM".
-   *
-   * 2. Outside Click Effect (for Start Menu):
-   *    If the Start Menu is open, listens for clicks outside it to close it.
-   *
-   * 3. Window Resize Effect:
-   *    Updates 'windowWidth' whenever the browser window is resized, allowing
-   *    conditional rendering of the "Start" text based on screen size.
-   *************************************************************************/
+  // Update clock every second
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -137,6 +109,7 @@ const App = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Close start menu on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -151,41 +124,61 @@ const App = () => {
     };
   }, [startMenuOpen]);
 
+  // Track window width
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /*************************************************************************
-   *                               RENDER
-   * We structure the UI similar to a Windows 95 desktop:
-   *  - Desktop icons at the top-left
-   *  - A fixed taskbar at the bottom with a Start button, search input, and clock
-   *  - Conditionals to display the About Modal and Start Menu
-   *************************************************************************/
+  // Handle Resizing the Modal
+  const modalRef = useRef(null);
+
+  const startResizing = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+
+    const startWidth = modalWidth;
+    const startHeight = modalHeight;
+
+    const doDrag = (moveEvent) => {
+      const newWidth = startWidth + (moveEvent.clientX - startX);
+      const newHeight = startHeight + (moveEvent.clientY - startY);
+      // Set minimum width/height to prevent collapsing too far
+      setModalWidth(Math.max(newWidth, 200));
+      setModalHeight(Math.max(newHeight, 200));
+    };
+
+    const stopDrag = () => {
+      document.removeEventListener("mousemove", doDrag);
+      document.removeEventListener("mouseup", stopDrag);
+    };
+
+    document.addEventListener("mousemove", doDrag);
+    document.addEventListener("mouseup", stopDrag);
+  };
+
   return (
     <div>
-      {/* Apply global styles and theme */}
       <GlobalStyles />
       <ThemeProvider theme={original}>
+        <img
+          src={bgImage}
+          style={{
+            width: "27%",
+            minWidth: "300px",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)"
+          }}
+          alt="background"
+        />
 
-        <img src={bgImage}
-             style={{
-              width: "27%",
-              minWidth: "300px",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-
-              transform: "translate(-50%, -50%)"
-              
-             }}>
-        </img>
-
-        {/********************************************************************
-         *                         DESKTOP ICONS
-         ********************************************************************/}
+        {/* Desktop Icons */}
         <div
           style={{
             position: "absolute",
@@ -198,7 +191,6 @@ const App = () => {
             gap: "20px",
           }}
         >
-          {/* ---------------------- Terminal Icon ---------------------- */}
           <div
             style={{
               padding: "8px",
@@ -216,16 +208,16 @@ const App = () => {
             <img
               src={console}
               alt="Console Icon"
-              style={{ 
+              style={{
                 width: "4vw",
-                minWidth: "60px", 
-                height: "auto" }}
+                minWidth: "60px",
+                height: "auto"
+              }}
               onClick={() => alert("Console clicked")}
             />
             <span style={{ fontSize: "0.9rem" }}>Terminal</span>
           </div>
 
-          {/* ---------------------- About Icon ---------------------- */}
           <div
             style={{
               padding: "8px",
@@ -243,15 +235,15 @@ const App = () => {
             <img
               src={notepad}
               alt="Notepad Icon"
-              style={{ 
+              style={{
                 width: "4vw",
-                minWidth: "60px", }}
+                minWidth: "60px",
+              }}
               onClick={handleAboutClick}
             />
             <span style={{ fontSize: "0.9rem" }}>About</span>
           </div>
 
-          {/* ---------------------- Roadmap Icon ---------------------- */}
           <div
             style={{
               padding: "8px",
@@ -269,15 +261,15 @@ const App = () => {
             <img
               src={globe}
               alt="Globe Icon"
-              style={{ 
+              style={{
                 width: "4vw",
-                minWidth: "60px", }}
+                minWidth: "60px",
+              }}
               onClick={() => alert("Roadmap clicked")}
             />
             <span style={{ fontSize: "0.9rem" }}>Roadmap</span>
           </div>
 
-          {/* ---------------------- Contact Icon ---------------------- */}
           <div
             style={{
               padding: "8px",
@@ -295,18 +287,17 @@ const App = () => {
             <img
               src={search}
               alt="Search Icon"
-              style={{ 
+              style={{
                 width: "4vw",
-                minWidth: "60px",  }}
+                minWidth: "60px",
+              }}
               onClick={() => alert("Contact clicked")}
             />
             <span style={{ fontSize: "0.9rem" }}>Contact</span>
           </div>
         </div>
 
-        {/********************************************************************
-         *                             TASKBAR
-         ********************************************************************/}
+        {/* Taskbar */}
         <div
           style={{
             position: "fixed",
@@ -322,7 +313,7 @@ const App = () => {
             padding: "0 10px",
           }}
         >
-          {/* --- Left side: Start Button & Search Bar --- */}
+          {/* Left side: Start Button & Search Bar */}
           <div
             style={{
               display: "flex",
@@ -349,11 +340,11 @@ const App = () => {
                   marginRight: "10px",
                 }}
               />
-              {/* Conditionally render the "Start" text only if windowWidth > 400 */}
-              {windowWidth > 1200 && <p style={{ fontSize: "1.2rem" }}>Start</p>}
+              {windowWidth > 1200 && (
+                <p style={{ fontSize: "1.2rem" }}>Start</p>
+              )}
             </Button>
 
-            {/* --- Start Menu (Conditional Rendering) --- */}
             {startMenuOpen && (
               <MenuList
                 ref={menuRef}
@@ -369,7 +360,6 @@ const App = () => {
                   alignItems: "stretch",
                 }}
               >
-                {/* Vertical Windows 95 Banner */}
                 <div
                   style={{
                     display: "flex",
@@ -390,7 +380,6 @@ const App = () => {
                   <p style={{ color: "white" }}>95</p>
                 </div>
 
-                {/* Start Menu Items */}
                 <div
                   style={{
                     flex: "1",
@@ -402,20 +391,18 @@ const App = () => {
                     onClick={() =>
                       window.open("https://x.com/windows95cto", "_blank")
                     }
-                  > 
-                  <img
-                   src={xIco}
-                   style={{
-                    position: "absolute",
-                    width: "20px",
-                    left: "15px"
-                   }}>
-                  </img>
+                  >
+                    <img
+                      src={xIco}
+                      style={{
+                        position: "absolute",
+                        width: "20px",
+                        left: "15px",
+                      }}
+                      alt="X Icon"
+                    />
                     <p style={{ transform: "translateX(50px)" }}>X</p>
                   </MenuListItem>
-
-
-
 
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
@@ -424,12 +411,13 @@ const App = () => {
                     }
                   >
                     <img
-                    src={teleIco}
-                    style={{
-                      position: "absolute",
-                      width: "30px"
-                    }}>
-                    </img>
+                      src={teleIco}
+                      style={{
+                        position: "absolute",
+                        width: "30px",
+                      }}
+                      alt="Telegram Icon"
+                    />
                     <p style={{ transform: "translateX(50px)" }}>Telegram</p>
                   </MenuListItem>
 
@@ -443,14 +431,17 @@ const App = () => {
                     }
                   >
                     <img
-                    src={console}
-                    style={{
-                      position: "absolute",
-                      width: "20px",
-                      left: "15px"
-                    }}>
-                    </img>
-                    <p style={{ transform: "translateX(50px)" }}>DexScreener</p>
+                      src={console}
+                      style={{
+                        position: "absolute",
+                        width: "20px",
+                        left: "15px",
+                      }}
+                      alt="Console Icon"
+                    />
+                    <p style={{ transform: "translateX(50px)" }}>
+                      DexScreener
+                    </p>
                   </MenuListItem>
 
                   <MenuListItem
@@ -463,20 +454,20 @@ const App = () => {
                     }
                   >
                     <img
-                    src={pumpIco}
-                    style={{
-                      position: "absolute",
-                      width: "25px",
-                      left: "15px"
-                    }}>
-                    </img>
+                      src={pumpIco}
+                      style={{
+                        position: "absolute",
+                        width: "25px",
+                        left: "15px",
+                      }}
+                      alt="Pump Icon"
+                    />
                     <p style={{ transform: "translateX(50px)" }}>PumpFun</p>
                   </MenuListItem>
                 </div>
               </MenuList>
             )}
 
-            {/* Search Input Field */}
             <TextInput
               variant="flat"
               placeholder="Search..."
@@ -488,7 +479,52 @@ const App = () => {
             />
           </div>
 
-          {/* --- Right side: Clock Display --- */}
+          {/* CENTER: RENDER OPEN WINDOWS AS TABS */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "0px 5px",
+              gap: "10px",
+              flex: 1,
+            }}
+          >
+            {/* If modal is open, show a button representing that window */}
+            {isModalOpen && (
+              <Button
+                style={{
+                  height: "50px",
+                  width: "13vw",
+                  minWidth: "80px",
+                  fontSize: "1.1rem",
+                  backgroundColor: "#c0c0c0",
+                  border: "3px inset  #e6e6e6",
+                  boxShadow: "inset 1px 1px 3px #000000",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#000000",
+                  fontFamily: "ms_sans_serif",
+                }}
+                onClick={() => {
+                  // Toggle modal visibility on tab click
+                  setIsModalVisible(!isModalVisible);
+                }}
+              >
+                <img
+                  src={notepad}
+                  alt="Notepad Icon"
+                  style={{
+                    height: "24px",
+                    marginRight: windowWidth > 1200 ? "20px" : "0px",
+                  }}
+                />
+                {windowWidth > 1200 && "About"}
+              </Button>
+            )}
+          </div>
+
+          {/* Right side: Clock Display */}
           <div style={{ paddingRight: "4px" }}>
             <div
               style={{
@@ -496,39 +532,37 @@ const App = () => {
                 width: "5vw",
                 minWidth: "80px",
                 fontSize: "1.1rem",
-                backgroundColor: "#c0c0c0", // Button gray
+                backgroundColor: "#c0c0c0",
                 border: "3px inset  #e6e6e6",
-                boxShadow: "inset 1px 1px 3px #000000", // White as secondary color
+                boxShadow: "inset 1px 1px 3px #000000",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#000000", // Text color
-                fontFamily: "ms_sans_serif", // Classic Windows 95 font
+                color: "#000000",
+                fontFamily: "ms_sans_serif",
               }}
             >
               {time}
             </div>
           </div>
-        
-          {/****************************************************************
-           *                            MODALS
-           ****************************************************************/}
+
+          {/* About Modal */}
           {isModalOpen && (
             <div
+              ref={modalRef}
               style={{
                 position: "fixed",
                 top: "calc(50vh - 200px)",
-                left: "calc(50vw - 250px)",
-                width: "500px",
-                height: "400px",
+                left: "calc(50vw - 200px)",
+                width: `${modalWidth}px`,
+                height: `${modalHeight}px`,
                 backgroundColor: "#fff",
                 border: "2px solid black",
                 zIndex: 1000,
-                display: "flex",
+                display: isModalVisible ? "flex" : "none",
                 flexDirection: "column",
                 cursor: "move",
               }}
-
               onMouseDown={(e) => {
                 const modal = e.currentTarget;
                 const offsetX = e.clientX - modal.getBoundingClientRect().left;
@@ -544,12 +578,16 @@ const App = () => {
                   document.removeEventListener("mouseup", stopDragging);
                 };
 
-                document.addEventListener("mousemove", handleMouseMove);
-                document.addEventListener("mouseup", stopDragging);
+                // Only move if user clicked title bar area
+                if (e.target.closest(".modal-titlebar")) {
+                  document.addEventListener("mousemove", handleMouseMove);
+                  document.addEventListener("mouseup", stopDragging);
+                }
               }}
             >
-              {/* ---- About Modal Title Bar ---- */}
+              {/* Title Bar */}
               <div
+                className="modal-titlebar"
                 style={{
                   backgroundColor: "#000080",
                   color: "white",
@@ -559,11 +597,16 @@ const App = () => {
                   justifyContent: "space-between",
                   padding: "0 10px",
                   fontSize: "14px",
+                  cursor: "move",
+                  userSelect: "none",
                 }}
               >
                 <span>About - Notepad</span>
                 <button
-                  onClick={closeModal}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeModal();
+                  }}
                   style={{
                     background: "none",
                     border: "none",
@@ -577,7 +620,7 @@ const App = () => {
                 </button>
               </div>
 
-              {/* ---- About Modal Menu Bar (Non-functional) ---- */}
+              {/* Menu Bar */}
               <div
                 style={{
                   backgroundColor: "#c0c0c0",
@@ -585,6 +628,7 @@ const App = () => {
                   padding: "5px 10px",
                   fontSize: "12px",
                   display: "flex",
+                  userSelect: "none",
                 }}
               >
                 <span style={{ marginRight: "15px" }} className="pointer">
@@ -601,7 +645,7 @@ const App = () => {
                 </span>
               </div>
 
-              {/* ---- About Modal Content Area ---- */}
+              {/* Content Area */}
               <div
                 style={{
                   flex: 1,
@@ -628,7 +672,7 @@ const App = () => {
                 </p>
               </div>
 
-              {/* ---- About Modal Status Bar ---- */}
+              {/* Status Bar */}
               <div
                 style={{
                   backgroundColor: "#c0c0c0",
@@ -640,14 +684,29 @@ const App = () => {
                   justifyContent: "space-between",
                   fontSize: "12px",
                   color: "black",
+                  userSelect: "none",
                 }}
               >
                 <span>Ln 1, Col 1</span>
                 <span>100%</span>
               </div>
+
+              {/* Resizer Handle */}
+              <div
+                onMouseDown={startResizing}
+                style={{
+                  width: "15px",
+                  height: "15px",
+                  backgroundColor: "#c0c0c0",
+                  borderTop: "1px solid #808080",
+                  borderLeft: "1px solid #808080",
+                  cursor: "nwse-resize",
+                  alignSelf: "flex-end",
+                  userSelect: "none",
+                }}
+              ></div>
             </div>
           )}
-
         </div>
       </ThemeProvider>
     </div>
