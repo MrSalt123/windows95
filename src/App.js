@@ -163,9 +163,8 @@ const App = () => {
             <div
               style={{
                 position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
+                top: "calc(50vh - 200px)",
+                left: "calc(50vw - 250px)", 
                 width: "500px",
                 height: "400px",
                 backgroundColor: "#fff",
@@ -173,6 +172,25 @@ const App = () => {
                 zIndex: 1000,
                 display: "flex",
                 flexDirection: "column",
+                cursor: "move",
+              }}
+              onMouseDown={(e) => {
+                const modal = e.currentTarget;
+                const offsetX = e.clientX - modal.getBoundingClientRect().left;
+                const offsetY = e.clientY - modal.getBoundingClientRect().top;
+
+                const handleMouseMove = (moveEvent) => {
+                  modal.style.left = `${moveEvent.clientX - offsetX}px`;
+                  modal.style.top = `${moveEvent.clientY - offsetY}px`;
+                };
+
+                const stopDragging = () => {
+                  document.removeEventListener("mousemove", handleMouseMove);
+                  document.removeEventListener("mouseup", stopDragging);
+                };
+
+                document.addEventListener("mousemove", handleMouseMove);
+                document.addEventListener("mouseup", stopDragging);
               }}
             >
               {/* Title Bar */}
@@ -274,6 +292,7 @@ const App = () => {
               </div>
             </div>
           )}
+
 
           {/* Roadmap Icon */}
           <div
@@ -429,7 +448,7 @@ const App = () => {
                       window.open("https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz", "_blank")
                     }
                   >
-                    <p style={{ transform: "translateX(20px)" }}>DexScreener</p>
+                    <p                     style={{ transform: "translateX(20px)" }}>DexScreener</p>
                   </MenuListItem>
 
                   <MenuListItem
@@ -475,3 +494,4 @@ const App = () => {
 };
 
 export default App;
+
