@@ -13,6 +13,8 @@ import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
 import console from "./assets/images/console_prompt-0.png";
+import cursor from "./assets/cursors/arrow0.png";
+import hand from "./assets/cursors/hand0.png";
 
 /* Pick a theme of your choice */
 import original from "react95/dist/themes/original";
@@ -42,12 +44,26 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     background: url(${bgImage}) no-repeat center center fixed;
     background-size: cover;
+    cursor: url(${cursor}), auto;
+  }
+
+  button, [role='button'], a, .pointer {
+    cursor: url(${hand}), pointer;
   }
 `;
 
 const App = () => {
     const [time, setTime] = useState("");
     const [startMenuOpen, setStartMenuOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleAboutClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -60,252 +76,368 @@ const App = () => {
         return () => clearInterval(interval);
     }, []);
 
-  return (
-    <div>
-      <GlobalStyles />
-      <ThemeProvider theme={original}>
-        {/* Desktop Icons */}
-        <div
-          style={{
-            position: "absolute",
-            top: "10%",
-            left: "20px",
-            color: "white",
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            gap: "30px",
-          }}
-        >
-          {/* Terminal Icon */}
-          <div
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "background-color 0.1 ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            <img
-              src={console}
-              alt="Console Icon"
-              style={{ width: "85px", height: "auto" }}
-              onClick={() => alert("Console clicked")}
-            />
-            <span style={{ fontSize: "1.1rem" }}>Terminal</span>
-          </div>
-
-          {/* About Icon */}
-          <div
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "background-color 0.1s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            <img
-              src={notepad}
-              alt="Notepad Icon"
-              style={{ width: "85px", height: "auto" }}
-              onClick={() => alert("Notepad clicked")}
-            />
-            <span style={{ fontSize: "1.1rem" }}>About</span>
-          </div>
-
-          {/* Roadmap Icon */}
-          <div
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "background-color 0.1s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            <img
-              src={globe}
-              alt="Globe Icon"
-              style={{ width: "85px", height: "auto" }}
-              onClick={() => alert("Roadmap clicked")}
-            />
-            <span style={{ fontSize: "1.1rem" }}>Roadmap</span>
-          </div>
-
-          {/* Contact Icon */}
-          <div
-            style={{
-              padding: "10px",
-              cursor: "pointer",
-              textAlign: "center",
-              transition: "background-color 0.1s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            <img
-              src={search}
-              alt="Search Icon"
-              style={{ width: "85px", height: "auto" }}
-              onClick={() => alert("Contact clicked")}
-            />
-            <span style={{ fontSize: "1.1rem" }}>Contact</span>
-          </div>
-        </div>
-
-        {/* Taskbar */}
-        <div
-          style={{
-            position: "fixed",
-            bottom: 0,
-            width: "100vw",
-            height: "90px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: "#c0c0c0",
-            borderTop: "2px solid #ffffff",
-            borderBottom: "2px solid #808080",
-            padding: "0 10px",
-          }}
-        >
-          {/* Left side: Start Button and Search Bar */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <Button
-              onClick={() => setStartMenuOpen(!startMenuOpen)}
-              active={startMenuOpen}
-              style={{
-                fontWeight: "bold",
-                height: "70px",
-                width: "150px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={win95Logo}
-                alt="Start Icon"
-                style={{
-                  height: "60px",
-                  marginRight: "10px",
-                }}
-              />
-              <p style={{fontSize: "1.4rem"}}>Start</p>
-            </Button>
-
-
-            {startMenuOpen && (
-              <MenuList
-                style={{
-                  position: "absolute",
-                  width: "410px",
-                  bottom: "90px",
-                  left: "0",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "stretch",
-                }}
-              >
-                {/* Rotated Windows 95 Banner */}
+    return (
+        <div>
+            <GlobalStyles />
+            <ThemeProvider theme={original}>
+                {/* Desktop Icons */}
                 <div
-                  style={{
-                    // add other font family
-  
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "80px",
-                    backgroundColor: "#008080",
-                    color: "#c0c0c0",
-                    writingMode: "vertical-rl",
-                    transform: "rotate(180deg)",
-                    fontSize: "3rem", 
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
+                    style={{
+                        position: "absolute",
+                        top: "1vh",
+                        left: "1vw",
+                        color: "white",
+                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "20px",
+                    }}
                 >
-                  <p>Windows</p><p style={{color: "white"}}> 95</p>
+                    {/* Terminal Icon */}
+                    <div
+                        style={{
+                            padding: "8px",
+                            textAlign: "center",
+                            transition: "background-color 0.1 ease",
+                        }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "transparent")
+                        }
+                        className='pointer'
+                    >
+                        <img
+                            src={console}
+                            alt="Console Icon"
+                            style={{ width: "4vw", height: "auto" }}
+                            onClick={() => alert("Console clicked")}
+                        />
+                        <span style={{ fontSize: "0.9rem" }}>Terminal</span>
+                    </div>
+
+                    {/* About Icon */}
+                    <div
+                        style={{
+                            padding: "8px",
+                            textAlign: "center",
+                            transition: "background-color 0.1s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "transparent")
+                        }
+                        className='pointer'
+                    >
+                        <img
+                            src={notepad}
+                            alt="Notepad Icon"
+                            style={{ width: "4vw", height: "auto" }}
+                            onClick={handleAboutClick}
+                        />
+                        <span style={{ fontSize: "0.9rem" }}>About</span>
+                    </div>
+
+                    {isModalOpen && (
+                        <div
+                            style={{
+                                position: "fixed",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                width: "500px",
+                                height: "400px",
+                                backgroundColor: "#fff",
+                                border: "2px solid black",
+                                zIndex: 1000,
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                            
+                        >
+                            {/* Title Bar */}
+                            <div
+                                style={{
+                                    backgroundColor: "#000080",
+                                    color: "white",
+                                    height: "30px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    padding: "0 10px",
+                                    fontSize: "14px",
+                                }}
+                            >
+                                <span>About - Notepad</span>
+                                <button
+                                    onClick={closeModal}
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        color: "white",
+                                        cursor: "pointer",
+                                        fontSize: "16px",
+                                        lineHeight: "14px",
+                                    }}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Menu Bar */}
+                            <div
+                                style={{
+                                    backgroundColor: "#c0c0c0",
+                                    borderBottom: "1px solid #808080",
+                                    padding: "5px 10px",
+                                    fontSize: "12px",
+                                    display: "flex",
+                                }}
+                            >
+                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                    File
+                                </span>
+                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                    Edit
+                                </span>
+                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                    Search
+                                </span>
+                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                    Help
+                                </span>
+                            </div>
+
+                            {/* Content Area */}
+                            <div
+                                style={{
+                                    flex: 1,
+                                    padding: "20px",
+                                    overflow: "auto",
+                                    fontSize: "14px",
+                                    backgroundColor: "#fff",
+                                }}
+                            >
+                                <h1
+                                    style={{
+                                        fontSize: "18px",
+                                        marginBottom: "10px",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    About This App
+                                </h1>
+                                <p style={{ lineHeight: "1.5" }}>
+                                    This is a Windows 95-inspired UI built with React95.
+                                    It mimics the look and feel of classic Windows 95 applications,
+                                    like Notepad.
+                                </p>
+                            </div>
+
+                            {/* Status Bar */}
+                            <div
+                                style={{
+                                    backgroundColor: "#c0c0c0",
+                                    borderTop: "1px solid #808080",
+                                    height: "25px",
+                                    padding: "0 10px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    fontSize: "12px",
+                                    color: "black",
+                                }}
+                            >
+                                <span>Ln 1, Col 1</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Roadmap Icon */}
+                    <div
+                        style={{
+                            padding: "8px",
+                            textAlign: "center",
+                            transition: "background-color 0.1s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "transparent")
+                        }
+                        className='pointer'
+                    >
+                        <img
+                            src={globe}
+                            alt="Globe Icon"
+                            style={{ width: "4vw", height: "auto" }}
+                            onClick={() => alert("Roadmap clicked")}
+                        />
+                        <span style={{ fontSize: "0.9rem" }}>Roadmap</span>
+                    </div>
+
+                    {/* Contact Icon */}
+                    <div
+                        style={{
+                            padding: "8px",
+                            textAlign: "center",
+                            transition: "background-color 0.1s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "transparent")
+                        }
+                        className='pointer'
+                    >
+                        <img
+                            src={search}
+                            alt="Search Icon"
+                            style={{ width: "4vw", height: "auto" }}
+                            onClick={() => alert("Contact clicked")}
+                        />
+                        <span style={{ fontSize: "0.9rem" }}>Contact</span>
+                    </div>
                 </div>
 
-                {/* Menu Items */}
+                {/* Taskbar */}
                 <div
-                  style={{
-                    flex: "1",
-                    backgroundColor: "#C1C1C1F",
-
-                  }}
+                    style={{
+                        position: "fixed",
+                        bottom: 0,
+                        width: "100vw",
+                        height: "6vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        backgroundColor: "#c0c0c0",
+                        borderTop: "2px solid #ffffff",
+                        borderBottom: "2px solid #808080",
+                        padding: "0 10px",
+                    }}
                 >
-                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("X clicked")}>
-                  <p style={{transform: "translateX(20px)"}}>X</p>
-                  </MenuListItem>
+                    {/* Left side: Start Button and Search Bar */}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                        }}
+                    >
+                        <Button
+                            onClick={() => setStartMenuOpen(!startMenuOpen)}
+                            active={startMenuOpen}
+                            style={{
+                                fontWeight: "bold",
+                                height: "5vh",
+                                width: "8vw",
+                                display: "flex",
+                            }}
+                        >
+                            <img
+                                src={win95Logo}
+                                alt="Start Icon"
+                                style={{
+                                    height: "4vh",
+                                    marginRight: "10px",
+                                }}
+                            />
+                            <p style={{ fontSize: "1.2rem" }}>Start</p>
+                        </Button>
 
-                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("Telegram clicked")}>
-                    <p style={{transform: "translateX(20px)"}}>Telegram</p>
-                  </MenuListItem>
+                        {startMenuOpen && (
+                            <MenuList
+                                style={{
+                                    position: "absolute",
+                                    width: "25vw",
+                                    bottom: "6vh",
+                                    left: "0",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "stretch",
+                                }}
+                            >
+                                {/* Rotated Windows 95 Banner */}
+                                <div
+                                    style={{
+                                        // add other font family
 
-                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("DexScreener clicked")}>
-                    <p style={{transform: "translateX(20px)"}}>DexScreener</p>
-                  </MenuListItem>
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        width: "4vw",
+                                        backgroundColor: "#008080",
+                                        color: "#c0c0c0",
+                                        writingMode: "vertical-rl",
+                                        transform: "rotate(180deg)",
+                                        fontSize: "3rem",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    <p>Windows</p><p style={{ color: "white" }}> 95</p>
+                                </div>
 
-                  <MenuListItem style={{height: "85px", fontSize: "1.4rem",}} onClick={() => alert("Pumpfun clicked")}>
-                    <p style={{transform: "translateX(20px)"}}>PumpFun</p>
-                  </MenuListItem>
+                                {/* Menu Items */}
+                                <div
+                                    style={{
+                                        flex: "1",
+                                        backgroundColor: "#C1C1C1F",
+
+                                    }}
+                                >
+                                    <MenuListItem style={{ height: "85px", fontSize: "1.4rem", }} onClick={() => window.open("https://x.com/windows95cto", "_blank")}>
+                                        <p style={{ transform: "translateX(20px)" }}>X</p>
+                                    </MenuListItem>
+
+                                    <MenuListItem style={{ height: "85px", fontSize: "1.4rem", }} onClick={() => window.open("https://t.me/windows95ctosol", "_blank")}>
+                                        <p style={{ transform: "translateX(20px)" }}>Telegram</p>
+                                    </MenuListItem>
+
+                                    <MenuListItem style={{ height: "85px", fontSize: "1.4rem", }} onClick={() => window.open("https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz", "_blank")}>
+                                        <p style={{ transform: "translateX(20px)" }}>DexScreener</p>
+                                    </MenuListItem>
+
+                                    <MenuListItem style={{ height: "85px", fontSize: "1.4rem", }} onClick={() => window.open("https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump", "_blank")}>
+                                        <p style={{ transform: "translateX(20px)" }}>PumpFun</p>
+                                    </MenuListItem>
+                                </div>
+                            </MenuList>
+                        )}
+
+                        <TextInput
+                            variant="flat"
+                            placeholder="Search..."
+                            width={200}
+                            style={{
+                                height: "4vh",
+                                width: "320px",
+                            }}
+                        />
+                    </div>
+
+                    {/* Right side: Clock */}
+                    <div style={{ paddingRight: "4px" }}>
+                        <Button
+                            active
+                            style={{
+                                height: "4vh",
+                                width: "5vw",
+                                fontSize: "1rem",
+                            }}
+                        >
+                            {time}
+                        </Button>
+                    </div>
                 </div>
-              </MenuList>
-            )}
-
-            <TextInput
-              variant="flat"
-              placeholder="Search..."
-              width={200}
-              style={{
-                height: "70px",
-                width: "320px",
-              }}
-            />
-          </div>
-
-          {/* Right side: Clock */}
-          <div style={{ 
-            paddingRight: "4px",
-             }}>
-            <Button active style={{
-              height: "70px",
-              width: "100px",
-              fontSize: "1.3rem"
-          
-            }}>{time}</Button>
-          </div>
+            </ThemeProvider>
         </div>
-        </ThemeProvider>
-    </div>
     );
 };
 
