@@ -355,7 +355,7 @@ const TopIndicators = () => {
       <div
         style={{
           position: 'absolute',
-          top: '30px',
+          top: '35px',
           left: '30px',
           color: 'white',
           display: 'flex',
@@ -692,7 +692,7 @@ const App = () => {
         <div
           style={{
             position: "absolute",
-            top: "40%",
+            top: "50%",
             transform: "translateY(-50%)",
             left: "1vw",
             color: "white",
@@ -718,8 +718,9 @@ const App = () => {
                 src={item.icon}
                 alt={`${item.name} Icon`}
                 style={{
+                  heigh: "4vh",
                   width: "4vw",
-                  minWidth: "60px",
+                  minWidth: "40px",
                   height: "auto",
                 }}
                 onClick={() => handleIconClick(item.id)}
