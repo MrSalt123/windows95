@@ -643,7 +643,6 @@ const App = () => {
             isVisible: false,
             width: 450,
             height: 450,
-            margin: 10,
         };
     });
     const [openModals, setOpenModals] = useState(initialState);
