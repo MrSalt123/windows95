@@ -19,6 +19,11 @@ import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
 import console from "./assets/images/console_prompt-0.png";
+
+import pumpIco from "./assets/images/pump-ico.png";
+import xIco from "./assets/images/x-ico.png";
+import teleIco from "./assets/images/tele-ico.png";
+
 import cursor from "./assets/cursors/arrow0.png";
 import hand from "./assets/cursors/hand0.png";
 import original from "react95/dist/themes/original";
@@ -397,9 +402,20 @@ const App = () => {
                     onClick={() =>
                       window.open("https://x.com/windows95cto", "_blank")
                     }
-                  >
-                    <p style={{ transform: "translateX(20px)" }}>X</p>
+                  > 
+                  <img
+                   src={xIco}
+                   style={{
+                    position: "absolute",
+                    width: "20px",
+                    left: "15px"
+                   }}>
+                  </img>
+                    <p style={{ transform: "translateX(50px)" }}>X</p>
                   </MenuListItem>
+
+
+
 
                   <MenuListItem
                     style={{ height: "50px", fontSize: "1.4rem" }}
@@ -407,7 +423,14 @@ const App = () => {
                       window.open("https://t.me/windows95ctosol", "_blank")
                     }
                   >
-                    <p style={{ transform: "translateX(20px)" }}>Telegram</p>
+                    <img
+                    src={teleIco}
+                    style={{
+                      position: "absolute",
+                      width: "30px"
+                    }}>
+                    </img>
+                    <p style={{ transform: "translateX(50px)" }}>Telegram</p>
                   </MenuListItem>
 
                   <MenuListItem
@@ -419,7 +442,15 @@ const App = () => {
                       )
                     }
                   >
-                    <p style={{ transform: "translateX(20px)" }}>DexScreener</p>
+                    <img
+                    src={console}
+                    style={{
+                      position: "absolute",
+                      width: "20px",
+                      left: "15px"
+                    }}>
+                    </img>
+                    <p style={{ transform: "translateX(50px)" }}>DexScreener</p>
                   </MenuListItem>
 
                   <MenuListItem
@@ -431,7 +462,15 @@ const App = () => {
                       )
                     }
                   >
-                    <p style={{ transform: "translateX(20px)" }}>PumpFun</p>
+                    <img
+                    src={pumpIco}
+                    style={{
+                      position: "absolute",
+                      width: "25px",
+                      left: "15px"
+                    }}>
+                    </img>
+                    <p style={{ transform: "translateX(50px)" }}>PumpFun</p>
                   </MenuListItem>
                 </div>
               </MenuList>
