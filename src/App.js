@@ -101,6 +101,22 @@ const ModalWindow = ({
     customTitleBar,
 }) => {
     const modalRef = useRef(null);
+
+    // Handle Escape key to close modal
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     // Handle resizing
@@ -115,8 +131,8 @@ const ModalWindow = ({
         const doDrag = (moveEvent) => {
             const newWidth = startW + (moveEvent.clientX - startX);
             const newHeight = startH + (moveEvent.clientY - startY);
-            setModalWidth(Math.max(newWidth, 200));
-            setModalHeight(Math.max(newHeight, 200));
+            setModalWidth(Math.max(newWidth, 300)); // Ensuring minimum width
+            setModalHeight(Math.max(newHeight, 200)); // Ensuring minimum height
         };
 
         const stopDrag = () => {
@@ -288,7 +304,6 @@ const ModalWindow = ({
  * a contract address with a copy button top-right.
  ***************************************************************************/
 
-
 /*
   Replace '3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz' with your actual pair address 
   from DexScreener. The one below is from your snippet.
@@ -419,9 +434,6 @@ const TopIndicators = () => {
         </>
     );
 };
-
-
-
 
 /***************************************************************************
  * DESKTOP ITEMS CONFIG
@@ -582,6 +594,33 @@ const desktopItems = [
             },
         },
     },
+    // **DexScreener Desktop Item**
+    {
+        id: "dexScreener",
+        name: "DexScreener",
+        icon: consoleIcon, // Replace with a specific DexScreener icon if available
+        content: (
+            <iframe
+                height="100%"
+                width="100%"
+                id="geckoterminal-embed"
+                title="GeckoTerminal Embed"
+                src="https://www.geckoterminal.com/solana/pools/3gbBKbVn95E1UGeR8MYNsPJcLdU59johk9rmCD24kdHz?embed=1&info=0&swaps=1&grayscale=0&light_chart=1"
+                frameBorder="0"
+                allow="clipboard-write"
+                allowFullScreen
+                style={{ border: "none", fontWeight: "bold" }}
+            ></iframe>
+        ),
+        title: "Chart",
+        showMenuBar: false,
+        showStatusBar: false,
+        customStyles: {
+            main: {
+                padding: "0",
+            },
+        },
+    },
 ];
 
 /***************************************************************************
@@ -594,8 +633,9 @@ const App = () => {
     const [startMenuOpen, setStartMenuOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const menuRef = useRef(null);
+    const startButtonRef = useRef(null); // Reference for Start button
 
-    // Initialize modal states
+    // Initialize modal states for desktop items
     const initialState = {};
     desktopItems.forEach((item) => {
         initialState[item.id] = {
@@ -647,7 +687,12 @@ const App = () => {
     // Close start menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target) &&
+                startButtonRef.current &&
+                !startButtonRef.current.contains(event.target)
+            ) {
                 setStartMenuOpen(false);
             }
         };
@@ -678,11 +723,11 @@ const App = () => {
                 <img
                     src={bgImage}
                     style={{
-                        width: "27%",
+                        width: "22%",
                         minWidth: "300px",
                         position: "absolute",
                         top: "50%",
-                        left: "50%",
+                        left: "48%",
                         transform: "translate(-50%, -50%)",
                     }}
                     alt="background"
@@ -692,8 +737,7 @@ const App = () => {
                 <div
                     style={{
                         position: "absolute",
-                        top: "30%",
-                        transform: "translateY(-50%)",
+                        top: "30px",
                         left: "1vw",
                         color: "white",
                         textAlign: "center",
@@ -718,7 +762,7 @@ const App = () => {
                                 src={item.icon}
                                 alt={`${item.name} Icon`}
                                 style={{
-                                    heigh: "4vh",
+                                    height: "4vh", // Fixed 'heigh' typo to 'height'
                                     width: "4vw",
                                     minWidth: "40px",
                                     height: "auto",
@@ -755,6 +799,7 @@ const App = () => {
                         }}
                     >
                         <Button
+                            ref={startButtonRef} // Assigned ref here
                             onClick={() => setStartMenuOpen(!startMenuOpen)}
                             active={false}
                             style={{
@@ -850,9 +895,10 @@ const App = () => {
                                         <p style={{ transform: "translateX(50px)" }}>Telegram</p>
                                     </MenuListItem>
 
+                                    {/* Updated DexScreener Menu Item */}
                                     <MenuListItem
                                         style={{ height: "50px", fontSize: "1.4rem" }}
-                                        onClick={() => window.open("https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz", "_blank")}
+                                        onClick={() => handleIconClick("dexScreener")} // Use existing handler
                                     >
                                         <img
                                             src={consoleIcon}
@@ -863,7 +909,7 @@ const App = () => {
                                             }}
                                             alt="Console Icon"
                                         />
-                                        <p style={{ transform: "translateX(50px)" }}>DexScreener</p>
+                                        <p style={{ transform: "translateX(50px)" }}>Chart</p>
                                     </MenuListItem>
 
                                     <MenuListItem
@@ -915,7 +961,7 @@ const App = () => {
                                     style={{
                                         height: "50px",
                                         width: "13vw",
-                                        minWidth: "80px",
+                                        minWidth: "60px",
                                         fontSize: "1.1rem",
                                         backgroundColor: "#c0c0c0",
                                         border: "3px inset  #e6e6e6",
@@ -1008,6 +1054,5 @@ const App = () => {
             </ThemeProvider>
         </div>
     );
-};
-
-export default App;
+  }
+    export default App;
