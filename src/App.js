@@ -14,7 +14,7 @@ import {
 } from "react95";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import win95Logo from "./assets/images/win95.png";
-import bgImage from "./assets/images/windowsbackground_2.png";
+import bgImage from "./assets/images/windows95bglogo.png";
 import notepad from "./assets/images/notepad.png";
 import globe from "./assets/images/globe.png";
 import search from "./assets/images/search.png";
@@ -24,6 +24,7 @@ import hand from "./assets/cursors/hand0.png";
 import original from "react95/dist/themes/original";
 import ms_sans_serif from "react95/dist/fonts/ms_sans_serif.woff2";
 import ms_sans_serif_bold from "react95/dist/fonts/ms_sans_serif_bold.woff2";
+import { shadow } from "react95/dist/common";
 
 /***************************************************************************
  *                          GLOBAL STYLES
@@ -54,8 +55,7 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     margin: 0;
-    background: url(${bgImage}) no-repeat center center fixed;
-    background-size: cover;
+
     cursor: url(${cursor}), auto;
     width: 100dvw;
     height: 100dvh;
@@ -86,10 +86,14 @@ const App = () => {
    * startMenuOpen: Boolean flag to show/hide the Start Menu.
    * isModalOpen:   Boolean flag to show/hide the About Modal.
    * menuRef:       A reference to the menu element for outside-click detection.
+   *
+   * windowWidth:   Tracks the current window width to conditionally show/hide 
+   *                the "Start" text in the start button.
    *************************************************************************/
   const [time, setTime] = useState("");
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const menuRef = useRef(null);
 
   /*************************************************************************
@@ -113,6 +117,10 @@ const App = () => {
    *
    * 2. Outside Click Effect (for Start Menu):
    *    If the Start Menu is open, listens for clicks outside it to close it.
+   *
+   * 3. Window Resize Effect:
+   *    Updates 'windowWidth' whenever the browser window is resized, allowing
+   *    conditional rendering of the "Start" text based on screen size.
    *************************************************************************/
   useEffect(() => {
     const interval = setInterval(() => {
@@ -138,6 +146,12 @@ const App = () => {
     };
   }, [startMenuOpen]);
 
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   /*************************************************************************
    *                               RENDER
    * We structure the UI similar to a Windows 95 desktop:
@@ -151,13 +165,21 @@ const App = () => {
       <GlobalStyles />
       <ThemeProvider theme={original}>
 
+        <img src={bgImage}
+             style={{
+              width: "27%",
+              minWidth: "300px",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+
+              transform: "translate(-50%, -50%)"
+              
+             }}>
+        </img>
+
         {/********************************************************************
          *                         DESKTOP ICONS
-         * Each icon is displayed on the desktop with hover effects.
-         *   - Terminal:  Just triggers an alert for now.
-         *   - About:     Opens the About Modal.
-         *   - Roadmap:   Triggers an alert for now.
-         *   - Contact:   Triggers an alert for now.
          ********************************************************************/}
         <div
           style={{
@@ -189,7 +211,10 @@ const App = () => {
             <img
               src={console}
               alt="Console Icon"
-              style={{ width: "4vw", height: "auto" }}
+              style={{ 
+                width: "4vw",
+                minWidth: "60px", 
+                height: "auto" }}
               onClick={() => alert("Console clicked")}
             />
             <span style={{ fontSize: "0.9rem" }}>Terminal</span>
@@ -213,19 +238,241 @@ const App = () => {
             <img
               src={notepad}
               alt="Notepad Icon"
-              style={{ width: "4vw", height: "auto" }}
+              style={{ 
+                width: "4vw",
+                minWidth: "60px", }}
               onClick={handleAboutClick}
             />
             <span style={{ fontSize: "0.9rem" }}>About</span>
           </div>
 
+          {/* ---------------------- Roadmap Icon ---------------------- */}
+          <div
+            style={{
+              padding: "8px",
+              textAlign: "center",
+              transition: "background-color 0.1s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+            className="pointer"
+          >
+            <img
+              src={globe}
+              alt="Globe Icon"
+              style={{ 
+                width: "4vw",
+                minWidth: "60px", }}
+              onClick={() => alert("Roadmap clicked")}
+            />
+            <span style={{ fontSize: "0.9rem" }}>Roadmap</span>
+          </div>
+
+          {/* ---------------------- Contact Icon ---------------------- */}
+          <div
+            style={{
+              padding: "8px",
+              textAlign: "center",
+              transition: "background-color 0.1s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+            className="pointer"
+          >
+            <img
+              src={search}
+              alt="Search Icon"
+              style={{ 
+                width: "4vw",
+                minWidth: "60px",  }}
+              onClick={() => alert("Contact clicked")}
+            />
+            <span style={{ fontSize: "0.9rem" }}>Contact</span>
+          </div>
+        </div>
+
+        {/********************************************************************
+         *                             TASKBAR
+         ********************************************************************/}
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            width: "100%",
+            height: "60px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#c0c0c0",
+            borderTop: "2px solid #ffffff",
+            borderBottom: "2px solid #808080",
+            padding: "0 10px",
+          }}
+        >
+          {/* --- Left side: Start Button & Search Bar --- */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <Button
+              onClick={() => setStartMenuOpen(!startMenuOpen)}
+              active={false}
+              style={{
+                fontWeight: "bold",
+                height: "50px",
+                width: "30%",
+                minWidth: "80px",
+                display: "flex",
+              }}
+            >
+              <img
+                src={win95Logo}
+                alt="Start Icon"
+                style={{
+                  height: "40px",
+                  marginRight: "10px",
+                }}
+              />
+              {/* Conditionally render the "Start" text only if windowWidth > 400 */}
+              {windowWidth > 1200 && <p style={{ fontSize: "1.2rem" }}>Start</p>}
+            </Button>
+
+            {/* --- Start Menu (Conditional Rendering) --- */}
+            {startMenuOpen && (
+              <MenuList
+                ref={menuRef}
+                style={{
+                  position: "absolute",
+                  width: "20%",
+                  height: "215px",
+                  minWidth: "250px",
+                  bottom: "60px",
+                  left: "0",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "stretch",
+                }}
+              >
+                {/* Vertical Windows 95 Banner */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "20%",
+                    backgroundColor: "#008080",
+                    color: "#c0c0c0",
+                    writingMode: "vertical-rl",
+                    transform: "rotate(180deg)",
+                    fontSize: "1.9rem",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    height: "200px",
+                  }}
+                >
+                  <p>Windows</p>
+                  <p style={{ color: "white" }}>95</p>
+                </div>
+
+                {/* Start Menu Items */}
+                <div
+                  style={{
+                    flex: "1",
+                    backgroundColor: "#C1C1C1",
+                  }}
+                >
+                  <MenuListItem
+                    style={{ height: "50px", fontSize: "1.4rem" }}
+                    onClick={() =>
+                      window.open("https://x.com/windows95cto", "_blank")
+                    }
+                  >
+                    <p style={{ transform: "translateX(20px)" }}>X</p>
+                  </MenuListItem>
+
+                  <MenuListItem
+                    style={{ height: "50px", fontSize: "1.4rem" }}
+                    onClick={() =>
+                      window.open("https://t.me/windows95ctosol", "_blank")
+                    }
+                  >
+                    <p style={{ transform: "translateX(20px)" }}>Telegram</p>
+                  </MenuListItem>
+
+                  <MenuListItem
+                    style={{ height: "50px", fontSize: "1.4rem" }}
+                    onClick={() =>
+                      window.open(
+                        "https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz",
+                        "_blank"
+                      )
+                    }
+                  >
+                    <p style={{ transform: "translateX(20px)" }}>DexScreener</p>
+                  </MenuListItem>
+
+                  <MenuListItem
+                    style={{ height: "50px", fontSize: "1.4rem" }}
+                    onClick={() =>
+                      window.open(
+                        "https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump",
+                        "_blank"
+                      )
+                    }
+                  >
+                    <p style={{ transform: "translateX(20px)" }}>PumpFun</p>
+                  </MenuListItem>
+                </div>
+              </MenuList>
+            )}
+
+            {/* Search Input Field */}
+            <TextInput
+              variant="flat"
+              placeholder="Search..."
+              width={200}
+              style={{
+                height: "50px",
+                width: "20dvw",
+              }}
+            />
+          </div>
+
+          {/* --- Right side: Clock Display --- */}
+          <div style={{ paddingRight: "4px" }}>
+            <div
+              style={{
+                height: "50px",
+                width: "5vw",
+                minWidth: "80px",
+                fontSize: "1.1rem",
+                backgroundColor: "#c0c0c0", // Button gray
+                border: "3px inset  #e6e6e6",
+                boxShadow: "inset 1px 1px 3px #000000", // White as secondary color
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#000000", // Text color
+                fontFamily: "ms_sans_serif", // Classic Windows 95 font
+              }}
+            >
+              {time}
+            </div>
+          </div>
+        
           {/****************************************************************
            *                            MODALS
-           * Here we handle the About Modal. It appears as a draggable 
-           * window with a title bar, menu bar (non-functional), content area,
-           * and a status bar. The user can close it by clicking the "X" button.
-           *
-           * Additional modals can be placed below as needed.
            ****************************************************************/}
           {isModalOpen && (
             <div
@@ -242,6 +489,7 @@ const App = () => {
                 flexDirection: "column",
                 cursor: "move",
               }}
+
               onMouseDown={(e) => {
                 const modal = e.currentTarget;
                 const offsetX = e.clientX - modal.getBoundingClientRect().left;
@@ -361,221 +609,6 @@ const App = () => {
             </div>
           )}
 
-          {/* ---------------------- Roadmap Icon ---------------------- */}
-          <div
-            style={{
-              padding: "8px",
-              textAlign: "center",
-              transition: "background-color 0.1s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-            className="pointer"
-          >
-            <img
-              src={globe}
-              alt="Globe Icon"
-              style={{ width: "4vw", height: "auto" }}
-              onClick={() => alert("Roadmap clicked")}
-            />
-            <span style={{ fontSize: "0.9rem" }}>Roadmap</span>
-          </div>
-
-          {/* ---------------------- Contact Icon ---------------------- */}
-          <div
-            style={{
-              padding: "8px",
-              textAlign: "center",
-              transition: "background-color 0.1s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-            className="pointer"
-          >
-            <img
-              src={search}
-              alt="Search Icon"
-              style={{ width: "4vw", height: "auto" }}
-              onClick={() => alert("Contact clicked")}
-            />
-            <span style={{ fontSize: "0.9rem" }}>Contact</span>
-          </div>
-        </div>
-
-        {/********************************************************************
-         *                             TASKBAR
-         * A fixed bar at the bottom of the screen, reminiscent of Windows 95. 
-         * It contains:
-         *   - A Start button that toggles the Start Menu
-         *   - A Search field
-         *   - A clock showing the current time
-         *
-         * When the Start Menu is open, it displays a vertical "Windows 95" 
-         * banner and a series of clickable menu items. 
-         ********************************************************************/}
-        <div
-          style={{
-            position: "fixed",
-            bottom: 0,
-            width: "100%",
-            height: "60px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: "#c0c0c0",
-            borderTop: "2px solid #ffffff",
-            borderBottom: "2px solid #808080",
-            padding: "0 10px",
-          }}
-        >
-          {/* --- Left side: Start Button & Search Bar --- */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <Button
-              onClick={() => setStartMenuOpen(!startMenuOpen)}
-              active={startMenuOpen}
-              style={{
-                fontWeight: "bold",
-                height: "5vh",
-                width: "8vw",
-                display: "flex",
-              }}
-            >
-              <img
-                src={win95Logo}
-                alt="Start Icon"
-                style={{
-                  height: "4vh",
-                  marginRight: "10px",
-                }}
-              />
-              <p style={{ fontSize: "1.2rem" }}>Start</p>
-            </Button>
-
-            {/* --- Start Menu (Conditional Rendering) --- */}
-            {startMenuOpen && (
-              <MenuList
-                ref={menuRef}
-                style={{
-                  position: "absolute",
-                  width: "25vw",
-                  bottom: "6vh",
-                  left: "0",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "stretch",
-                }}
-              >
-                {/* Vertical Windows 95 Banner */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "4vw",
-                    backgroundColor: "#008080",
-                    color: "#c0c0c0",
-                    writingMode: "vertical-rl",
-                    transform: "rotate(180deg)",
-                    fontSize: "3rem",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                >
-                  <p>Windows</p>
-                  <p style={{ color: "white" }}>95</p>
-                </div>
-
-                {/* Start Menu Items */}
-                <div
-                  style={{
-                    flex: "1",
-                    backgroundColor: "#C1C1C1",
-                  }}
-                >
-                  <MenuListItem
-                    style={{ height: "85px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open("https://x.com/windows95cto", "_blank")
-                    }
-                  >
-                    <p style={{ transform: "translateX(20px)" }}>X</p>
-                  </MenuListItem>
-
-                  <MenuListItem
-                    style={{ height: "85px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open("https://t.me/windows95ctosol", "_blank")
-                    }
-                  >
-                    <p style={{ transform: "translateX(20px)" }}>Telegram</p>
-                  </MenuListItem>
-
-                  <MenuListItem
-                    style={{ height: "85px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open(
-                        "https://dexscreener.com/solana/3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz",
-                        "_blank"
-                      )
-                    }
-                  >
-                    <p style={{ transform: "translateX(20px)" }}>DexScreener</p>
-                  </MenuListItem>
-
-                  <MenuListItem
-                    style={{ height: "85px", fontSize: "1.4rem" }}
-                    onClick={() =>
-                      window.open(
-                        "https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump",
-                        "_blank"
-                      )
-                    }
-                  >
-                    <p style={{ transform: "translateX(20px)" }}>PumpFun</p>
-                  </MenuListItem>
-                </div>
-              </MenuList>
-            )}
-
-            {/* Search Input Field */}
-            <TextInput
-              variant="flat"
-              placeholder="Search..."
-              width={200}
-              style={{
-                height: "4vh",
-                width: "320px",
-              }}
-            />
-          </div>
-
-          {/* --- Right side: Clock Display --- */}
-          <div style={{ paddingRight: "4px" }}>
-            <Button
-              active
-              style={{
-                height: "4vh",
-                width: "5vw",
-                fontSize: "1rem",
-              }}
-            >
-              {time}
-            </Button>
-          </div>
         </div>
       </ThemeProvider>
     </div>
