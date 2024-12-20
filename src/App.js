@@ -178,10 +178,10 @@ const App = () => {
                                         background: "none",
                                         border: "none",
                                         color: "white",
-                                        cursor: "pointer",
                                         fontSize: "16px",
                                         lineHeight: "14px",
                                     }}
+                                    className='pointer'
                                 >
                                     ✕
                                 </button>
@@ -197,16 +197,16 @@ const App = () => {
                                     display: "flex",
                                 }}
                             >
-                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                <span style={{ marginRight: "15px"}} className='pointer'>
                                     File
                                 </span>
-                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                <span style={{ marginRight: "15px"}} className='pointer'>
                                     Edit
                                 </span>
-                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                <span style={{ marginRight: "15px"}} className='pointer'>
                                     Search
                                 </span>
-                                <span style={{ marginRight: "15px", cursor: "default" }}>
+                                <span style={{ marginRight: "15px"}} className='pointer'>
                                     Help
                                 </span>
                             </div>
@@ -226,11 +226,12 @@ const App = () => {
                                         fontSize: "18px",
                                         marginBottom: "10px",
                                         fontWeight: "bold",
+                                        color: "black",
                                     }}
                                 >
                                     About This App
                                 </h1>
-                                <p style={{ lineHeight: "1.5" }}>
+                                <p style={{ lineHeight: "1.5", color: "black" }}>
                                     This is a Windows 95-inspired UI built with React95.
                                     It mimics the look and feel of classic Windows 95 applications,
                                     like Notepad.
