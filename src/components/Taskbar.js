@@ -4,6 +4,7 @@ import win95Logo from "../assets/images/win95.png";
 import StartMenu from "./StartMenu";
 
 const Taskbar = ({
+    desktopItems,
     startMenuOpen,
     setStartMenuOpen,
     startButtonRef,
@@ -13,6 +14,7 @@ const Taskbar = ({
     handleIconClick,
     openModals,
     setOpenModals,
+    bringToFront,
 }) => {
     return (
         <div
@@ -39,8 +41,11 @@ const Taskbar = ({
                 }}
             >
                 <Button
-                    ref={startButtonRef} // Assigned ref here
-                    onClick={() => setStartMenuOpen(!startMenuOpen)}
+                    ref={startButtonRef}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setStartMenuOpen(!startMenuOpen);
+                    }}
                     active={false}
                     style={{
                         fontWeight: "bold",
@@ -89,6 +94,12 @@ const Taskbar = ({
                 {Object.keys(openModals).map((key) => {
                     const modal = openModals[key];
                     if (!modal.isOpen) return null;
+
+                    // Find the corresponding desktop item
+                    const desktopItem = desktopItems.find((item) => item.id === key);
+
+                    if (!desktopItem) return null; // Skip if no match
+
                     return (
                         <Button
                             key={key}
@@ -106,25 +117,20 @@ const Taskbar = ({
                                 color: "#000000",
                                 fontFamily: "ms_sans_serif",
                             }}
-                            onClick={() =>
-                                setOpenModals((prev) => ({
-                                    ...prev,
-                                    [key]: {
-                                        ...modal,
-                                        isVisible: !modal.isVisible,
-                                    },
-                                }))
-                            }
+                            onClick={() => {
+                                bringToFront(key);
+                            }}
+                            
                         >
                             <img
-                                src="../assets/images/console_prompt-0.png"
-                                alt="Icon"
+                                src={desktopItem.icon}
+                                alt={`${desktopItem.name} Icon`}
                                 style={{
                                     height: "24px",
-                                    marginRight: windowWidth > 1200 ? "20px" : "0px",
+                                    marginRight: windowWidth > 1200 ? "10px" : "0px",
                                 }}
                             />
-                            {windowWidth > 1200 && key}
+                            {windowWidth > 1200 && desktopItem.name}
                         </Button>
                     );
                 })}

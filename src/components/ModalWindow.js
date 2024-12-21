@@ -107,23 +107,24 @@ const ModalWindow = ({
     };
 
     return (
-        <div
+            <div
             ref={modalRef}
             style={{
-                position: "fixed",
+                position: "absolute",
                 top: "calc(50vh - 250px)",
                 left: "calc(50vw - 250px)",
                 width: `${modalWidth}px`,
                 height: `${modalHeight}px`,
                 backgroundColor: "#fff",
                 border: "2px solid black",
-                zIndex: 1000,
                 display: isVisible ? "flex" : "none",
                 flexDirection: "column",
+                zIndex: customStyles?.zIndex || 1,
                 ...customStyles.container,
             }}
             onMouseDown={handleMouseDown}
         >
+    
             <div
                 className="modal-titlebar"
                 style={{
