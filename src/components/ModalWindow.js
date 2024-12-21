@@ -8,12 +8,17 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
+    id,
     title,
     content,
     isOpen,
     isVisible,
     onClose,
+    onMinimize,
+    onMaximizeToggle,
+    onMouseDown,
     customStyles = {},
+    zIndex,
     showMenuBar = true,
     showStatusBar = true,
     customMenuBar,
@@ -22,6 +27,7 @@ const ModalWindow = ({
 }) => {
     const [modalWidth, setModalWidth] = useState(450);
     const [modalHeight, setModalHeight] = useState(450);
+    const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
 
     // Handle Escape key to close modal
@@ -76,6 +82,12 @@ const ModalWindow = ({
     // Handle dragging by title bar
     const handleMouseDown = (e) => {
         const modal = modalRef.current;
+
+        console.log(`Clicked modal: ${id}`);
+        if (typeof onMouseDown === "function") {
+            onMouseDown();
+        }
+
         const offsetX = e.clientX - modal.getBoundingClientRect().left;
         const offsetY = e.clientY - modal.getBoundingClientRect().top;
 
@@ -93,6 +105,7 @@ const ModalWindow = ({
             document.addEventListener("mousemove", handleMouseMove);
             document.addEventListener("mouseup", stopDragging);
         }
+
     };
 
     const mainAreaStyles = {
@@ -106,25 +119,44 @@ const ModalWindow = ({
         ...customStyles.main,
     };
 
+    const handleMaximizeToggle = () => {
+        const toggledMaximized = !isMaximized;
+        setIsMaximized(toggledMaximized);
+
+        if (onMaximizeToggle) {
+            onMaximizeToggle(toggledMaximized);
+        }
+
+        if (toggledMaximized) {
+            setModalWidth(window.innerWidth - 20); // Max width with padding
+            setModalHeight(window.innerHeight - 20); // Max height with padding
+        } else {
+            setModalWidth(450); // Default width
+            setModalHeight(450); // Default height
+        }
+    };
+
+    if (!isVisible) return null;
+
     return (
-            <div
+        <div
             ref={modalRef}
             style={{
                 position: "absolute",
-                top: "calc(50vh - 250px)",
-                left: "calc(50vw - 250px)",
+                top: isMaximized ? "10px" : "calc(50vh - 250px)",
+                left: isMaximized ? "10px" : "calc(50vw - 250px)",
                 width: `${modalWidth}px`,
                 height: `${modalHeight}px`,
                 backgroundColor: "#fff",
                 border: "2px solid black",
                 display: isVisible ? "flex" : "none",
                 flexDirection: "column",
-                zIndex: customStyles?.zIndex || 1,
+                zIndex: zIndex,
                 ...customStyles.container,
             }}
             onMouseDown={handleMouseDown}
         >
-    
+
             <div
                 className="modal-titlebar"
                 style={{
@@ -142,22 +174,59 @@ const ModalWindow = ({
                 }}
             >
                 {customTitleBar ? customTitleBar : <span>{title}</span>}
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onClose();
-                    }}
-                    style={{
-                        background: "none",
-                        border: "none",
-                        color: "white",
-                        fontSize: "16px",
-                        lineHeight: "14px",
-                    }}
-                    className="pointer"
-                >
-                    ✕
-                </button>
+                <div style={{ display: "flex", gap: "5px" }}>
+                    {/* Minimize Button */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (onMinimize) onMinimize(); // Call the minimize handler
+                        }}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            color: "white",
+                            fontSize: "16px",
+                            lineHeight: "14px",
+                        }}
+                        className="pointer"
+                    >
+                        &#x2212;
+                    </button>
+
+                    {/* Maximize Button */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleMaximizeToggle();
+                        }}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            color: "white",
+                            fontSize: "16px",
+                            lineHeight: "14px",
+                        }}
+                        className="pointer"
+                    >
+                        &#10066;
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClose();
+                        }}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            color: "white",
+                            fontSize: "16px",
+                            lineHeight: "14px",
+                        }}
+                        className="pointer"
+                    >
+                        ✕
+                    </button>
+                </div>
             </div>
 
             {showMenuBar && (

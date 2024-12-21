@@ -43,20 +43,22 @@ const App = () => {
 
     const bringToFront = (id) => {
         setZOrder((prev) => {
-            console.log("Current zOrder:", prev); // Debugging
-            if (prev[prev.length - 1] === id) {
-                console.log(`Modal ${id} is already in front.`);
-                return prev; // No change needed if it's already in front
-            }
-            const newOrder = prev.filter((modalId) => modalId !== id);
-            console.log("Updated zOrder:", [...newOrder, id]); // Debugging
-            return [...newOrder, id];
+            const newOrder = prev.filter((modalId) => modalId !== id); // Remove the clicked modal
+            const updatedOrder = [...newOrder, id]; // Add it to the end
+            console.log("Updated zOrder:", updatedOrder); // Debugging
+            return updatedOrder;
         });
     };
-    
-    
-    
-    
+
+
+    const handleMinimize = (id) => {
+        setOpenModals((prev) => ({
+            ...prev,
+            [id]: { ...prev[id], isVisible: false },
+        }));
+    };
+
+
 
     const closeModal = (id) => {
         setOpenModals((prev) => ({
@@ -159,33 +161,36 @@ const App = () => {
                 />
 
 
-               {/* Render All Modals */}
-               {desktopItems.map((item) => {
-                const modalState = openModals[item.id];
-                const zIndex = zOrder.indexOf(item.id) + 1;
+                {/* Render All Modals */}
+                {desktopItems.map((item) => {
+                    const modalState = openModals[item.id];
+                    const zIndex = zOrder.indexOf(item.id) + 1;
 
-                console.log(`Modal ${item.id} has zIndex:`, zIndex); // Debugging
+                    console.log(`Modal ${item.id} has zIndex:`, zIndex); // Debugging
 
-                return (
-                    <ModalWindow
-                        key={item.id}
-                        title={item.title}
-                        content={item.content}
-                        isOpen={modalState.isOpen}
-                        isVisible={modalState.isVisible}
-                        onClose={() => closeModal(item.id)}
-                        onMouseDown={() => bringToFront(item.id)}
-                        style={{
-                            zIndex: zIndex,
-                        }}
-                        customStyles={item.customStyles}
-                        showMenuBar={item.showMenuBar}
-                        showStatusBar={item.showStatusBar}
-                        customMenuBar={item.customMenuBar}
-                        customStatusBar={item.customStatusBar}
-                    />
-                );
-            })}
+                    return (
+                        <ModalWindow
+                            key={item.id}
+                            id={item.id}
+                            title={item.title}
+                            content={item.content}
+                            isOpen={modalState.isOpen}
+                            isVisible={modalState.isVisible}
+                            onClose={() => closeModal(item.id)}
+                            onMouseDown={() => bringToFront(item.id)}
+                            onMinimize={() => handleMinimize(item.id)}
+                            zIndex={zIndex}
+                            style={{
+                                zIndex: zIndex,
+                            }}
+                            customStyles={item.customStyles}
+                            showMenuBar={item.showMenuBar}
+                            showStatusBar={item.showStatusBar}
+                            customMenuBar={item.customMenuBar}
+                            customStatusBar={item.customStatusBar}
+                        />
+                    );
+                })}
 
 
 

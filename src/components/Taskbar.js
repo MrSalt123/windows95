@@ -118,9 +118,14 @@ const Taskbar = ({
                                 fontFamily: "ms_sans_serif",
                             }}
                             onClick={() => {
-                                bringToFront(key);
+                                setOpenModals((prev) => ({
+                                    ...prev,
+                                    [key]: {
+                                        ...prev[key],
+                                        isVisible: !prev[key].isVisible, // Toggle visibility
+                                    },
+                                }));
                             }}
-                            
                         >
                             <img
                                 src={desktopItem.icon}

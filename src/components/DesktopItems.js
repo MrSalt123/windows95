@@ -3,8 +3,7 @@ import React from "react";
 import consoleIcon from "../assets/images/console_prompt-0.png";
 import notepad from "../assets/images/notepad.png";
 import globe from "../assets/images/globe.png";
-import search from "../assets/images/search.png";
-import pumpIco from "../assets/images/pump-ico.png";
+import roadmap from "../assets/images/roadmap.png";
 
 const msPaintMenuBar = (
     <>
@@ -32,8 +31,20 @@ const desktopItems = [
         content: (
             <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                 <p>Type commands here...</p>
-                <p>dir</p>
-                <p>... results ...</p>
+                <p>crypto-ops --sync blockchain</p>
+                <p>Initializing crypto operations... </p>
+                <p>[ 0% ] Connecting to the blockchain...</p>
+                <p>[ 5% ] Loading Windows95 Token...</p>  
+                <p>[ 10% ] Fetching token metadata...</p>  
+                <p>[ 20% ] Checking current price:</p>  
+                <p>[ 30% ] Synchronizing mempool: 100 transactions pending...</p>  
+                <p>[ 40% ] Verifying 1000x incoming...</p>  
+                <p>[ 50% ] Confirming: Preparing for liftoff...</p>  
+                <p>[ 60% ] Token status: Ready to moon </p>      
+                <p>[ 70% ] Broadcasting to the blockchain...</p>  
+                <p>[ 80% ] Accumulating community FOMO...</p>  
+                <p>[ 90% ] Reaching escape velocity...</p>
+                <p>[100% ] Operations complete. The moon is calling.</p>
             </div>
         ),
         title: "Terminal",
@@ -104,7 +115,7 @@ const desktopItems = [
                         border: "2px inset #808080",
                     }}
                 >
-                    <p style={{ margin: "10px", color: "black" }}>Draw something here...</p>
+                    <img src={roadmap}></img>
                 </div>
                 <div
                     style={{
@@ -124,7 +135,7 @@ const desktopItems = [
                 </div>
             </div>
         ),
-        title: "Untitled - Paint",
+        title: "Roadmap - Paint",
         showMenuBar: true,
         showStatusBar: true,
         customMenuBar: msPaintMenuBar,
@@ -133,32 +144,6 @@ const desktopItems = [
             main: {
                 backgroundColor: "#c0c0c0",
                 color: "black",
-            },
-        },
-    },
-    {
-        id: "contact",
-        name: "Contact",
-        icon: search,
-        content: (
-            <div>
-                <h2>Contact Information</h2>
-                <p>Email: contact@example.com</p>
-                <p>Phone: +1-555-1234</p>
-            </div>
-        ),
-        title: "Contact - Search",
-        showMenuBar: true,
-        showStatusBar: true,
-        customMenuBar: (
-            <>
-                <span style={{ marginRight: "15px" }} className="pointer">Contact</span>
-                <span style={{ marginRight: "15px" }} className="pointer">Help</span>
-            </>
-        ),
-        customStyles: {
-            main: {
-                backgroundColor: "#fff8e1",
             },
         },
     },

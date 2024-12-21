@@ -1,0 +1,50 @@
+    {
+        id: "terminal",
+        name: "Terminal",
+        icon: consoleIcon,
+        content: (
+            <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                <p>Type commands here...</p>
+                <p>dir</p>
+                <p>... results ...</p>
+            </div>
+        ),
+        title: "Terminal",
+        customStyles: {
+            main: {
+                backgroundColor: "black",
+                color: "green",
+                fontFamily: "monospace",
+                padding: "10px",
+            },
+        },
+        showMenuBar: false,
+        showStatusBar: false,
+    }, 
+
+        {
+        id: "contact",
+        name: "Contact",
+        icon: search,
+        content: (
+            <div>
+                <h2>Contact Information</h2>
+                <p>Email: contact@example.com</p>
+                <p>Phone: +1-555-1234</p>
+            </div>
+        ),
+        title: "Contact - Search",
+        showMenuBar: true,
+        showStatusBar: true,
+        customMenuBar: (
+            <>
+                <span style={{ marginRight: "15px" }} className="pointer">Contact</span>
+                <span style={{ marginRight: "15px" }} className="pointer">Help</span>
+            </>
+        ),
+        customStyles: {
+            main: {
+                backgroundColor: "#fff8e1",
+            },
+        },
+    },
