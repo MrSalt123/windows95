@@ -24,7 +24,7 @@ const Taskbar = ({
                 position: "fixed",
                 bottom: "0px",
                 width: "100%",
-                height: "9%",
+                height: "5%",
                 minHeight: "40px",
                 display: "flex",
                 justifyContent: "space-between",
