@@ -7,7 +7,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
-    id,
     title,
     icon,
     content,

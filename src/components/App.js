@@ -188,6 +188,7 @@ const App = () => {
                 {desktopItems.map((item) => {
                     const modalState = openModals[item.id];
                     const zIndex = zOrder.indexOf(item.id) + 1;
+                    const offset = openModals[item.id]?.offset || 0;
 
                     return (
                         <ModalWindow
@@ -216,6 +217,8 @@ const App = () => {
                                         height: `calc(100vh - ${headerHeight}px)`,
                                     }
                                     : {
+                                        top: `calc(50vh - ${450 / 2}px + ${offset}px)`,
+                                        left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
                                     },
                             }}
                         />
