@@ -65,7 +65,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
             <MenuListItem
                 style={{ height: "50px", fontSize: "1.4rem" }}
-                onClick={() => window.open("https://t.me/windows95ctosol", "_blank")}
+                onClick={() => window.open("https://t.me/Windows95Portal", "_blank")}
             >
                 <img
                     src={teleIco}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import consoleIcon from "../assets/images/console_prompt-0.png";
 import notepad from "../assets/images/notepad.png";
 import globe from "../assets/images/globe.png";
@@ -24,7 +24,7 @@ const msPaintStatusBar = (
 );
 
 const TerminalContent = () => {
-    const [output, setOutput] = useState([
+    const [output] = useState([
         "crypto-ops --sync blockchain",
         "Initializing crypto operations...",
         "[ 0% ] Connecting to the blockchain...",
@@ -34,20 +34,32 @@ const TerminalContent = () => {
         "[ 30% ] Synchronizing mempool: 100 transactions pending..",
         "[ 40% ] Verifying 1000x incoming...",
         "[ 50% ] Confirming: Preparing for liftoff...",
-        "[ 60% ] Token status: Ready to moon ",
+        "[ 60% ] Token status: Ready to moon",
         "[ 70% ] Broadcasting to the blockchain...",
         "[ 80% ] Accumulating community FOMO...",
-        "[ 90% ] Reaching escape velocity..",
-        "[100% ] Operations complete. The moon is calling."
+        "[ 90% ] Reaching escape velocity...",
+        "[100% ] Operations complete. The moon is calling.",
     ]);
+    const [displayedLines, setDisplayedLines] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [input, setInput] = useState("");
+
+    useEffect(() => {
+        if (currentIndex < output.length) {
+            const timer = setTimeout(() => {
+                setDisplayedLines((prev) => [...prev, output[currentIndex]]);
+                setCurrentIndex((prev) => prev + 1);
+            }, 750); // 500ms delay
+            return () => clearTimeout(timer);
+        }
+    }, [currentIndex, output]);
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
             if (input.trim()) {
-                setOutput((prevOutput) => [
-                    ...prevOutput,
+                setDisplayedLines((prev) => [
+                    ...prev,
                     `> ${input}`,
                     "Command not found",
                 ]);
@@ -69,7 +81,7 @@ const TerminalContent = () => {
                 overflowY: "auto",
             }}
         >
-            {output.map((line, index) => (
+            {displayedLines.map((line, index) => (
                 <p key={index} style={{ margin: 0 }}>
                     {line}
                 </p>
@@ -94,6 +106,7 @@ const TerminalContent = () => {
         </div>
     );
 };
+
 
 const desktopItems = [
     {
@@ -120,7 +133,15 @@ const desktopItems = [
         content: (
             <>
                 <p style={{ lineHeight: "1.5", color: "black" }}>
-                    The Windows95 Token is a tribute to the charm of simplicity and nostalgia...
+                    The Windows95 Token is a tribute to the charm of simplicity and nostalgia, a digital reminder of a time when computing was excitingly fresh, yet delightfully uncomplicated. This token encapsulates the essence of the mid-90s tech era: the sound of a dial-up connection, the iconic startup chime, and the thrill of discovering the endless possibilities of a personal computer for the first time.
+                </p>
+                <br></br>
+                <p style={{ lineHeight: "1.5", color: "black" }}>
+                    In a world rapidly advancing with AI-driven coins and high-tech innovation, Windows95 Token offers a breath of fresh air—proof that sometimes, less is more. It's a celebration of clean interfaces, straightforward functionality, and the joy of exploration without overwhelming complexity.
+                </p>
+                <br></br>
+                <p style={{ lineHeight: "1.5", color: "black" }}>
+                    It’s not just a cryptocurrency; it’s a movement that reminds us to embrace simplicity, appreciate history, and find innovation in nostalgia. Experience a time when every pixel had meaning, and let Windows95 Token refresh your perspective in the digital revolution.
                 </p>
             </>
         ),
@@ -165,9 +186,25 @@ const desktopItems = [
                         position: "relative",
                         left: "50%",
                         top: "50%",
-                        transform:"translate(-50%, -50%)"
+                        transform: "translate(-50%, -50%)"
 
                     }} />
+                </div>
+                <div
+                    style={{
+                        height: "30px",
+                        backgroundColor: "#ffffff",
+                        border: "2px outset #808080",
+                        display: "flex",
+                        gap: "5px",
+                        alignItems: "center",
+                        padding: "5px",
+                    }}
+                >
+                    <div style={{ width: "20px", height: "20px", backgroundColor: "red" }}></div>
+                    <div style={{ width: "20px", height: "20px", backgroundColor: "blue" }}></div>
+                    <div style={{ width: "20px", height: "20px", backgroundColor: "green" }}></div>
+                    <div style={{ width: "20px", height: "20px", backgroundColor: "yellow" }}></div>
                 </div>
             </div>
         ),
@@ -176,6 +213,12 @@ const desktopItems = [
         showStatusBar: true,
         customMenuBar: msPaintMenuBar,
         customStatusBar: msPaintStatusBar,
+        customStyles: {
+            main: {
+                backgroundColor: "#c0c0c0",
+                color: "black",
+            },
+        },
     },
     {
         id: "chart",

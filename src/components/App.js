@@ -36,24 +36,24 @@ const App = () => {
     });
     const [openModals, setOpenModals] = useState(initialState);
     const [zOrder, setZOrder] = useState([]);
-    const [globalOffset, setGlobalOffset] = useState(0); // System-wide stacking offset
 
     const handleIconClick = (id) => {
         if (openModals[id]?.isOpen) {
             // Do nothing if the modal is already open
             return;
         }
+        const openModalCount = Object.values(openModals).filter(modal => modal.isOpen).length;
         setOpenModals((prev) => ({
             ...prev,
             [id]: {
                 ...prev[id],
                 isOpen: true,
                 isVisible: true,
-                offset: globalOffset, // Assign current global offset to the modal
+                offset: openModalCount * 20, // Assign current global offset to the modal
             },
         }));
         bringToFront(id);
-        setGlobalOffset((prev) => prev + 20); // Increment system-wide offset for the next modal
+        // setGlobalOffset((prev) => prev + 20); // Increment system-wide offset for the next modal
     };
 
     const bringToFront = (id) => {
@@ -150,12 +150,12 @@ const App = () => {
                         <div
                             key={item.id}
                             className="p-2 text-center transition-colors duration-100 pointer hover:bg-white/30"
+                            onClick={() => handleIconClick(item.id)}
                         >
                             <img
                                 src={item.icon}
                                 alt={`${item.name} Icon`}
                                 className="h-[6vh] w-[6vh] min-w-[40px] min-h-[40px]"
-                                onClick={() => handleIconClick(item.id)}
                             />
                             <span className="text-[0.9rem]">{item.name}</span>
                         </div>
@@ -197,6 +197,10 @@ const App = () => {
                             onMaximizeToggle={() => toggleMaximize(item.id)}
                             onMouseDown={() => bringToFront(item.id)}
                             zIndex={zIndex}
+                            customMenuBar={item.customMenuBar}
+                            customStatusBar={item.customStatusBar}
+                            showMenuBar={item.showMenuBar} 
+                            showStatusBar={item.showStatusBar}
                             customStyles={{
                                 container: modalState.isMaximized
                                     ? {

@@ -7,9 +7,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
-    id,
     title,
-    icon, // Added icon prop for the modal
+    icon,
     content,
     isOpen,
     isVisible,
@@ -19,8 +18,8 @@ const ModalWindow = ({
     onMouseDown,
     customStyles = {},
     zIndex,
-    showMenuBar = true,
-    showStatusBar = true,
+    showMenuBar,
+    showStatusBar,
     customMenuBar,
     customStatusBar,
     customTitleBar,
@@ -215,7 +214,14 @@ const ModalWindow = ({
                         ...customStyles.menuBar,
                     }}
                 >
-                    {customMenuBar}
+                    {customMenuBar ? customMenuBar : (
+                        <>
+                            <span style={{ marginRight: "15px" }} className="pointer">File</span>
+                            <span style={{ marginRight: "15px" }} className="pointer">Edit</span>
+                            <span style={{ marginRight: "15px" }} className="pointer">Search</span>
+                            <span style={{ marginRight: "15px" }} className="pointer">Help</span>
+                        </>
+                    )}
                 </div>
             )}
 
@@ -249,7 +255,12 @@ const ModalWindow = ({
                         ...customStyles.statusBar,
                     }}
                 >
-                    {customStatusBar}
+                    {customStatusBar ? customStatusBar : (
+                        <>
+                            <span>Ln 1, Col 1</span>
+                            <span>100%</span>
+                        </>
+                    )}
                 </div>
             )}
 
