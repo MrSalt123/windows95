@@ -1,9 +1,9 @@
-
-import React from "react";
+import React, { useState } from "react";
 import consoleIcon from "../assets/images/console_prompt-0.png";
 import notepad from "../assets/images/notepad.png";
 import globe from "../assets/images/globe.png";
 import roadmap from "../assets/images/roadmap.png";
+import chart from "../assets/images/chart-ico.png";
 
 const msPaintMenuBar = (
     <>
@@ -23,30 +23,84 @@ const msPaintStatusBar = (
     </>
 );
 
+const TerminalContent = () => {
+    const [output, setOutput] = useState([
+        "crypto-ops --sync blockchain",
+        "Initializing crypto operations...",
+        "[ 0% ] Connecting to the blockchain...",
+        "[ 5% ] Loading Windows95 Token...",
+        "[ 10% ] Fetching token metadata...",
+        "[ 20% ] Checking current price:",
+        "[ 30% ] Synchronizing mempool: 100 transactions pending..",
+        "[ 40% ] Verifying 1000x incoming...",
+        "[ 50% ] Confirming: Preparing for liftoff...",
+        "[ 60% ] Token status: Ready to moon ",
+        "[ 70% ] Broadcasting to the blockchain...",
+        "[ 80% ] Accumulating community FOMO...",
+        "[ 90% ] Reaching escape velocity..",
+        "[100% ] Operations complete. The moon is calling."
+    ]);
+    const [input, setInput] = useState("");
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (input.trim()) {
+                setOutput((prevOutput) => [
+                    ...prevOutput,
+                    `> ${input}`,
+                    "Command not found",
+                ]);
+                setInput("");
+            }
+        }
+    };
+
+    return (
+        <div
+            style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                fontFamily: "monospace",
+                color: "green",
+                backgroundColor: "black",
+                padding: "10px",
+                overflowY: "auto",
+            }}
+        >
+            {output.map((line, index) => (
+                <p key={index} style={{ margin: 0 }}>
+                    {line}
+                </p>
+            ))}
+            <div>
+                <span style={{ color: "green" }}>$ </span>
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    style={{
+                        backgroundColor: "black",
+                        color: "green",
+                        border: "none",
+                        outline: "none",
+                        width: "90%",
+                    }}
+                    autoFocus
+                />
+            </div>
+        </div>
+    );
+};
+
 const desktopItems = [
     {
         id: "terminal",
         name: "Terminal",
         icon: consoleIcon,
-        content: (
-            <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                <p>Type commands here...</p>
-                <p>crypto-ops --sync blockchain</p>
-                <p>Initializing crypto operations... </p>
-                <p>[ 0% ] Connecting to the blockchain...</p>
-                <p>[ 5% ] Loading Windows95 Token...</p>  
-                <p>[ 10% ] Fetching token metadata...</p>  
-                <p>[ 20% ] Checking current price:</p>  
-                <p>[ 30% ] Synchronizing mempool: 100 transactions pending...</p>  
-                <p>[ 40% ] Verifying 1000x incoming...</p>  
-                <p>[ 50% ] Confirming: Preparing for liftoff...</p>  
-                <p>[ 60% ] Token status: Ready to moon </p>      
-                <p>[ 70% ] Broadcasting to the blockchain...</p>  
-                <p>[ 80% ] Accumulating community FOMO...</p>  
-                <p>[ 90% ] Reaching escape velocity...</p>
-                <p>[100% ] Operations complete. The moon is calling.</p>
-            </div>
-        ),
+        content: <TerminalContent />,
         title: "Terminal",
         customStyles: {
             main: {
@@ -66,15 +120,7 @@ const desktopItems = [
         content: (
             <>
                 <p style={{ lineHeight: "1.5", color: "black" }}>
-                    The Windows95 Token is a tribute to the charm of simplicity and nostalgia, a digital reminder of a time when computing was excitingly fresh, yet delightfully uncomplicated. This token encapsulates the essence of the mid-90s tech era: the sound of a dial-up connection, the iconic startup chime, and the thrill of discovering the endless possibilities of a personal computer for the first time.
-                </p>
-                <br></br>
-                <p style={{ lineHeight: "1.5", color: "black" }}>
-                    In a world rapidly advancing with AI-driven coins and high-tech innovation, Windows95 Token offers a breath of fresh air—proof that sometimes, less is more. It's a celebration of clean interfaces, straightforward functionality, and the joy of exploration without overwhelming complexity.
-                </p>
-                <br></br>
-                <p style={{ lineHeight: "1.5", color: "black" }}>
-                    It’s not just a cryptocurrency; it’s a movement that reminds us to embrace simplicity, appreciate history, and find innovation in nostalgia. Experience a time when every pixel had meaning, and let Windows95 Token refresh your perspective in the digital revolution.
+                    The Windows95 Token is a tribute to the charm of simplicity and nostalgia...
                 </p>
             </>
         ),
@@ -115,23 +161,13 @@ const desktopItems = [
                         border: "2px inset #808080",
                     }}
                 >
-                    <img src={roadmap}></img>
-                </div>
-                <div
-                    style={{
-                        height: "30px",
-                        backgroundColor: "#ffffff",
-                        border: "2px outset #808080",
-                        display: "flex",
-                        gap: "5px",
-                        alignItems: "center",
-                        padding: "5px",
-                    }}
-                >
-                    <div style={{ width: "20px", height: "20px", backgroundColor: "red" }}></div>
-                    <div style={{ width: "20px", height: "20px", backgroundColor: "blue" }}></div>
-                    <div style={{ width: "20px", height: "20px", backgroundColor: "green" }}></div>
-                    <div style={{ width: "20px", height: "20px", backgroundColor: "yellow" }}></div>
+                    <img src={roadmap} alt="Roadmap" style={{
+                        position: "relative",
+                        left: "50%",
+                        top: "50%",
+                        transform:"translate(-50%, -50%)"
+
+                    }} />
                 </div>
             </div>
         ),
@@ -140,18 +176,11 @@ const desktopItems = [
         showStatusBar: true,
         customMenuBar: msPaintMenuBar,
         customStatusBar: msPaintStatusBar,
-        customStyles: {
-            main: {
-                backgroundColor: "#c0c0c0",
-                color: "black",
-            },
-        },
     },
-    // **DexScreener Desktop Item**
     {
         id: "chart",
         name: "Chart",
-        icon: consoleIcon, // Replace with a specific DexScreener icon if available
+        icon: chart,
         content: (
             <iframe
                 height="100%"

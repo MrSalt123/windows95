@@ -52,7 +52,7 @@ const TopIndicators = () => {
     }, []);
 
     let changeColor = 'white';
-    if (priceChange > 0) changeColor = 'green';
+    if (priceChange > 0) changeColor = '#15bf64';
     else if (priceChange < 0) changeColor = 'red';
 
     const formattedChange = `${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%`;
@@ -76,15 +76,14 @@ const TopIndicators = () => {
                     color: 'white',
                     display: 'flex',
                     alignItems: 'baseline',
-                    fontWeight: "lighter",
                     gap: '10px',
                 }}
             >
-                <span style={{ fontSize: '1.1rem', color: 'white' }}>
+                <span style={{ fontSize: '1.1rem', color: 'white', fontWeight: "lighter" }}>
                     {price}
                 </span>
                 {!error && (
-                    <span style={{ transform: "translateY(-10px)", fontSize: '0.8rem', color: changeColor }}>
+                    <span style={{ transform: "translateY(-10px)", fontSize: '0.8rem', color: changeColor, fontWeight: "bold" }}>
                         {formattedChange}
                     </span>
                 )}

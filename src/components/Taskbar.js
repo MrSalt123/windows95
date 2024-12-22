@@ -15,12 +15,14 @@ const Taskbar = ({
     openModals,
     setOpenModals,
     bringToFront,
+    closeModal,
 }) => {
     return (
         <div
             style={{
+                zIndex: "1000",
                 position: "fixed",
-                bottom: 0,
+                bottom: "0px",
                 width: "100%",
                 height: "60px",
                 display: "flex",
@@ -49,7 +51,10 @@ const Taskbar = ({
                     active={false}
                     style={{
                         fontWeight: "bold",
-                        height: "50px",
+                        height: "48px",
+                        border: "none",
+                        backgroundColor: "transparent",
+
                         width: "30%",
                         minWidth: "80px",
                         display: "flex",
@@ -101,42 +106,81 @@ const Taskbar = ({
                     if (!desktopItem) return null; // Skip if no match
 
                     return (
-                        <Button
+                        <div
                             key={key}
                             style={{
-                                height: "50px",
-                                width: "13vw",
-                                minWidth: "60px",
-                                fontSize: "1.1rem",
-                                backgroundColor: "#c0c0c0",
-                                border: "3px inset  #e6e6e6",
-                                boxShadow: "inset 1px 1px 3px #000000",
+                                position: "relative",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                color: "#000000",
+                                height: "50px",
+                                width: "13vw",
+                                minWidth: "60px",
+                                backgroundColor: "#c0c0c0",
+                                border: "3px inset #e6e6e6",
+                                boxShadow: "inset 1px 1px 3px #000000",
                                 fontFamily: "ms_sans_serif",
-                            }}
-                            onClick={() => {
-                                setOpenModals((prev) => ({
-                                    ...prev,
-                                    [key]: {
-                                        ...prev[key],
-                                        isVisible: !prev[key].isVisible, // Toggle visibility
-                                    },
-                                }));
+                                cursor: "pointer",
                             }}
                         >
-                            <img
-                                src={desktopItem.icon}
-                                alt={`${desktopItem.name} Icon`}
-                                style={{
-                                    height: "24px",
-                                    marginRight: windowWidth > 1200 ? "10px" : "0px",
+                            {/* Taskbar Tab Button */}
+                            <Button
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Avoid triggering unwanted actions
+                                    setOpenModals((prev) => ({
+                                        ...prev,
+                                        [key]: {
+                                            ...prev[key],
+                                            isVisible: true, // Restore visibility if minimized
+                                        },
+                                    }));
+                                    bringToFront(key); // Bring the modal to the front
                                 }}
-                            />
-                            {windowWidth > 1200 && desktopItem.name}
-                        </Button>
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                <img
+                                    src={desktopItem.icon}
+                                    alt={`${desktopItem.name} Icon`}
+                                    style={{
+                                        height: "24px",
+                                        marginRight: windowWidth > 1200 ? "10px" : "0px",
+                                    }}
+                                />
+                                {windowWidth > 1200 && desktopItem.name}
+                            </Button>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation(); // Prevent tab click action
+                                    closeModal(key); // Call the passed-in closeModal function
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    height: "16px",
+                                    width: "16px",
+                                    color: "black",
+                                    border: "none",
+                                    borderRadius: "50%",
+                                    fontSize: "12px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                ✕
+                            </button>
+
+                        </div>
                     );
                 })}
             </div>
@@ -150,7 +194,7 @@ const Taskbar = ({
                         minWidth: "80px",
                         fontSize: "1.1rem",
                         backgroundColor: "#c0c0c0",
-                        border: "3px inset  #e6e6e6",
+                        border: "3px inset #e6e6e6",
                         boxShadow: "inset 1px 1px 3px #000000",
                         display: "flex",
                         alignItems: "center",

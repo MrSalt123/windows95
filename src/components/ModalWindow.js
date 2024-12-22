@@ -4,12 +4,12 @@
  * status bars. Supports dragging, resizing, and custom styling.
  ***************************************************************************/
 
-
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
     id,
     title,
+    icon, // Added icon prop for the modal
     content,
     isOpen,
     isVisible,
@@ -56,17 +56,10 @@ const ModalWindow = ({
         const startH = modalHeight;
 
         const doDrag = (moveEvent) => {
-            const newWidth = Math.min(
-                window.innerWidth,
-                startW + (moveEvent.clientX - startX)
-            );
-            const newHeight = Math.min(
-                window.innerHeight,
-                startH + (moveEvent.clientY - startY)
-            );
-
-            setModalWidth(Math.max(newWidth, 300)); // Minimum width of 300
-            setModalHeight(Math.max(newHeight, 200)); // Minimum height of 200
+            const newWidth = Math.max(300, startW + (moveEvent.clientX - startX)); // Minimum width
+            const newHeight = Math.max(200, startH + (moveEvent.clientY - startY)); // Minimum height
+            setModalWidth(newWidth);
+            setModalHeight(newHeight);
         };
 
         const stopDrag = () => {
@@ -78,12 +71,10 @@ const ModalWindow = ({
         window.addEventListener("mouseup", stopDrag);
     };
 
-
     // Handle dragging by title bar
     const handleMouseDown = (e) => {
         const modal = modalRef.current;
 
-        console.log(`Clicked modal: ${id}`);
         if (typeof onMouseDown === "function") {
             onMouseDown();
         }
@@ -105,20 +96,9 @@ const ModalWindow = ({
             document.addEventListener("mousemove", handleMouseMove);
             document.addEventListener("mouseup", stopDragging);
         }
-
     };
 
-    const mainAreaStyles = {
-        flex: 1,
-        overflow: "auto",
-        fontSize: "14px",
-        backgroundColor: "#fff",
-        color: "#000",
-        display: "flex",
-        flexDirection: "column",
-        ...customStyles.main,
-    };
-
+    // Handle maximize toggle
     const handleMaximizeToggle = () => {
         const toggledMaximized = !isMaximized;
         setIsMaximized(toggledMaximized);
@@ -128,11 +108,11 @@ const ModalWindow = ({
         }
 
         if (toggledMaximized) {
-            setModalWidth(window.innerWidth - 20); // Max width with padding
-            setModalHeight(window.innerHeight - 20); // Max height with padding
+            setModalWidth(window.innerWidth - 20);
+            setModalHeight(window.innerHeight - 20);
         } else {
-            setModalWidth(450); // Default width
-            setModalHeight(450); // Default height
+            setModalWidth(450);
+            setModalHeight(450);
         }
     };
 
@@ -156,7 +136,6 @@ const ModalWindow = ({
             }}
             onMouseDown={handleMouseDown}
         >
-
             <div
                 className="modal-titlebar"
                 style={{
@@ -169,31 +148,30 @@ const ModalWindow = ({
                     padding: "0 10px",
                     fontSize: "14px",
                     userSelect: "none",
-                    cursor: "move",
+                    cursor: isMaximized ? "default" : "move",
                     ...customStyles.titleBar,
                 }}
             >
-                {customTitleBar ? customTitleBar : <span>{title}</span>}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    {icon && <img src={icon} alt={`${title} Icon`} style={{ height: "20px", width: "20px" }} />}
+                    {customTitleBar ? customTitleBar : <span>{title}</span>}
+                </div>
                 <div style={{ display: "flex", gap: "5px" }}>
-                    {/* Minimize Button */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (onMinimize) onMinimize(); // Call the minimize handler
+                            if (onMinimize) onMinimize();
                         }}
                         style={{
                             background: "none",
                             border: "none",
                             color: "white",
                             fontSize: "16px",
-                            lineHeight: "14px",
                         }}
                         className="pointer"
                     >
                         &#x2212;
                     </button>
-
-                    {/* Maximize Button */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -204,7 +182,6 @@ const ModalWindow = ({
                             border: "none",
                             color: "white",
                             fontSize: "16px",
-                            lineHeight: "14px",
                         }}
                         className="pointer"
                     >
@@ -220,7 +197,6 @@ const ModalWindow = ({
                             border: "none",
                             color: "white",
                             fontSize: "16px",
-                            lineHeight: "14px",
                         }}
                         className="pointer"
                     >
@@ -236,23 +212,27 @@ const ModalWindow = ({
                         borderBottom: "1px solid #808080",
                         padding: "5px 10px",
                         fontSize: "12px",
-                        display: "flex",
-                        userSelect: "none",
                         ...customStyles.menuBar,
                     }}
                 >
-                    {customMenuBar ? customMenuBar : (
-                        <>
-                            <span style={{ marginRight: "15px" }} className="pointer">File</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Edit</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Search</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Help</span>
-                        </>
-                    )}
+                    {customMenuBar}
                 </div>
             )}
 
-            <div style={mainAreaStyles}>{content}</div>
+            <div
+                style={{
+                    flex: 1,
+                    overflow: "auto",
+                    fontSize: "14px",
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    display: "flex",
+                    flexDirection: "column",
+                    ...customStyles.main,
+                }}
+            >
+                {content}
+            </div>
 
             {showStatusBar && (
                 <div
@@ -266,16 +246,10 @@ const ModalWindow = ({
                         justifyContent: "space-between",
                         fontSize: "12px",
                         color: "black",
-                        userSelect: "none",
                         ...customStyles.statusBar,
                     }}
                 >
-                    {customStatusBar ? customStatusBar : (
-                        <>
-                            <span>Ln 1, Col 1</span>
-                            <span>100%</span>
-                        </>
-                    )}
+                    {customStatusBar}
                 </div>
             )}
 
@@ -292,7 +266,7 @@ const ModalWindow = ({
                     userSelect: "none",
                     ...customStyles.resizer,
                 }}
-            ></div>
+            />
         </div>
     );
 };

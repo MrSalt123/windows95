@@ -2,8 +2,9 @@ import React from "react";
 import { MenuList, MenuListItem } from "react95";
 import xIco from "../assets/images/x-ico.png";
 import teleIco from "../assets/images/tele-ico.png";
-import consoleIcon from "../assets/images/console_prompt-0.png";
 import pumpIco from "../assets/images/pump-ico.png";
+import discord from "../assets/images/discord_ico.png";
+
 
 const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
     <MenuList
@@ -25,12 +26,12 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "20%",
+                width: "13%",
                 backgroundColor: "#008080",
                 color: "#c0c0c0",
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
-                fontSize: "1.9rem",
+                fontSize: "2.0rem",
                 fontWeight: "bold",
                 textAlign: "center",
                 height: "200px",
@@ -78,19 +79,19 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             </MenuListItem>
 
             <MenuListItem
+                onClick={() => window.open("https://discord.com/invite/ke75Qvv2yP", "_blank")}
                 style={{ height: "50px", fontSize: "1.4rem" }}
-                onClick={() => handleIconClick("chart")}
             >
                 <img
-                    src={consoleIcon}
+                    src={discord}
                     style={{
                         position: "absolute",
-                        width: "20px",
-                        left: "15px",
+                        width: "27px",
+                        left: "11px",
                     }}
-                    alt="Console Icon"
+                    alt="Dicord icon"
                 />
-                <p style={{ transform: "translateX(50px)" }}>Chart</p>
+                <p style={{ transform: "translateX(50px)" }}>Discord</p>
             </MenuListItem>
 
             <MenuListItem
@@ -101,8 +102,8 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     src={pumpIco}
                     style={{
                         position: "absolute",
-                        width: "25px",
-                        left: "15px",
+                        width: "30px",
+                        left: "8px",
                     }}
                     alt="Pump Icon"
                 />

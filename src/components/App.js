@@ -22,34 +22,46 @@ const App = () => {
     const menuRef = useRef(null);
     const startButtonRef = useRef(null); // Reference for Start button
 
+    // Header height to prevent modal overlap
+    const headerHeight = 60;
+
     // Initialize modal states for desktop items
     const initialState = {};
     desktopItems.forEach((item) => {
         initialState[item.id] = {
             isOpen: false,
             isVisible: false,
+            isMaximized: false,
         };
     });
     const [openModals, setOpenModals] = useState(initialState);
     const [zOrder, setZOrder] = useState([]);
+    const [globalOffset, setGlobalOffset] = useState(0); // System-wide stacking offset
 
     const handleIconClick = (id) => {
+        if (openModals[id]?.isOpen) {
+            // Do nothing if the modal is already open
+            return;
+        }
         setOpenModals((prev) => ({
             ...prev,
-            [id]: { ...prev[id], isOpen: true, isVisible: true },
+            [id]: {
+                ...prev[id],
+                isOpen: true,
+                isVisible: true,
+                offset: globalOffset, // Assign current global offset to the modal
+            },
         }));
         bringToFront(id);
+        setGlobalOffset((prev) => prev + 20); // Increment system-wide offset for the next modal
     };
 
     const bringToFront = (id) => {
         setZOrder((prev) => {
             const newOrder = prev.filter((modalId) => modalId !== id); // Remove the clicked modal
-            const updatedOrder = [...newOrder, id]; // Add it to the end
-            console.log("Updated zOrder:", updatedOrder); // Debugging
-            return updatedOrder;
+            return [...newOrder, id]; // Add it to the end
         });
     };
-
 
     const handleMinimize = (id) => {
         setOpenModals((prev) => ({
@@ -58,14 +70,19 @@ const App = () => {
         }));
     };
 
-
-
     const closeModal = (id) => {
         setOpenModals((prev) => ({
             ...prev,
-            [id]: { ...prev[id], isOpen: false, isVisible: false },
+            [id]: { ...prev[id], isOpen: false, isVisible: false, isMaximized: false },
         }));
         setZOrder((prev) => prev.filter((modalId) => modalId !== id));
+    };
+
+    const toggleMaximize = (id) => {
+        setOpenModals((prev) => ({
+            ...prev,
+            [id]: { ...prev[id], isMaximized: !prev[id].isMaximized },
+        }));
     };
 
     useEffect(() => {
@@ -158,41 +175,44 @@ const App = () => {
                     openModals={openModals}
                     setOpenModals={setOpenModals}
                     bringToFront={bringToFront}
+                    closeModal={closeModal}
                 />
-
 
                 {/* Render All Modals */}
                 {desktopItems.map((item) => {
                     const modalState = openModals[item.id];
                     const zIndex = zOrder.indexOf(item.id) + 1;
 
-                    console.log(`Modal ${item.id} has zIndex:`, zIndex); // Debugging
-
                     return (
                         <ModalWindow
                             key={item.id}
                             id={item.id}
                             title={item.title}
+                            icon={item.icon}
                             content={item.content}
                             isOpen={modalState.isOpen}
                             isVisible={modalState.isVisible}
                             onClose={() => closeModal(item.id)}
-                            onMouseDown={() => bringToFront(item.id)}
                             onMinimize={() => handleMinimize(item.id)}
+                            onMaximizeToggle={() => toggleMaximize(item.id)}
+                            onMouseDown={() => bringToFront(item.id)}
                             zIndex={zIndex}
-                            style={{
-                                zIndex: zIndex,
+                            customStyles={{
+                                container: modalState.isMaximized
+                                    ? {
+                                        top: "0px",
+                                        left: "0px",
+                                        width: "100vw",
+                                        height: `calc(100vh - ${headerHeight}px)`,
+                                    }
+                                    : {
+                                        top: `calc(50vh - 250px + ${modalState.offset || 0}px)`,
+                                        left: `calc(50vw - 250px + ${modalState.offset || 0}px)`,
+                                    },
                             }}
-                            customStyles={item.customStyles}
-                            showMenuBar={item.showMenuBar}
-                            showStatusBar={item.showStatusBar}
-                            customMenuBar={item.customMenuBar}
-                            customStatusBar={item.customStatusBar}
                         />
                     );
                 })}
-
-
 
             </ThemeProvider>
         </div>
