@@ -145,7 +145,11 @@ const App = () => {
                 />
 
                 {/* Desktop Icons */}
-                <div className="absolute top-8 left-[1vw] text-white text-center flex flex-col gap-5">
+                <div className="absolute top-[2%] left-[1vw] text-white text-center flex flex-col gap-5"
+                                 style={{
+                                    height: "auto",
+                                }}>
+
                     {desktopItems.map((item) => (
                         <div
                             key={item.id}
@@ -153,11 +157,13 @@ const App = () => {
                             onClick={() => handleIconClick(item.id)}
                         >
                             <img
+
                                 src={item.icon}
                                 alt={`${item.name} Icon`}
-                                className="h-[6vh] w-[6vh] min-w-[40px] min-h-[40px]"
+                                className="h-[7vh] w-[7vh] min-w-[35px] min-h-[35px]"
+
                             />
-                            <span className="text-[0.9rem]">{item.name}</span>
+                            <span className="text-[0.6rem]">{item.name}</span>
                         </div>
                     ))}
                 </div>
@@ -210,8 +216,6 @@ const App = () => {
                                         height: `calc(100vh - ${headerHeight}px)`,
                                     }
                                     : {
-                                        top: `calc(50vh - 250px + ${modalState.offset || 0}px)`,
-                                        left: `calc(50vw - 250px + ${modalState.offset || 0}px)`,
                                     },
                             }}
                         />

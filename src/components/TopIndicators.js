@@ -71,7 +71,7 @@ const TopIndicators = () => {
             <div
                 style={{
                     position: 'absolute',
-                    top: '80px',
+                    top: '70px',
                     right: '20px',
                     color: 'white',
                     display: 'flex',
@@ -93,7 +93,7 @@ const TopIndicators = () => {
             <div
                 style={{
                     position: 'absolute',
-                    top: '30px',
+                    top: '25px',
                     right: '30px',
                     display: 'flex',
                     alignItems: 'center',

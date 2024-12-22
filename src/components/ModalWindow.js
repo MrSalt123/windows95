@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
+    id,
     title,
     icon,
     content,
@@ -18,16 +19,43 @@ const ModalWindow = ({
     onMouseDown,
     customStyles = {},
     zIndex,
-    showMenuBar,
-    showStatusBar,
+    showMenuBar = true,
+    showStatusBar = true,
     customMenuBar,
     customStatusBar,
     customTitleBar,
 }) => {
-    const [modalWidth, setModalWidth] = useState(450);
+    const [modalWidth, setModalWidth] = useState(window.innerWidth < 600 ? 300 : 450);
     const [modalHeight, setModalHeight] = useState(450);
     const [isMaximized, setIsMaximized] = useState(false);
+    const [modalPosition, setModalPosition] = useState({
+        top: `calc(50vh - ${450 / 2}px)`,
+        left: `calc(50vw - ${450 / 2}px)`,
+    });
     const modalRef = useRef(null);
+
+    // Adjust modal width and position for mobile devices
+    useEffect(() => {
+        const handleResize = () => {
+            const isMobile = window.innerWidth < 600;
+            const newWidth = isMobile ? Math.min(window.innerWidth - 40, 300) : 450;
+
+            setModalWidth(newWidth);
+
+            const centeredTop = `calc(50vh - ${Math.min(window.innerHeight / 2, modalHeight / 2)}px)`;
+            const centeredLeft = `calc(50vw - ${newWidth / 2}px)`;
+
+            setModalPosition({
+                top: centeredTop,
+                left: centeredLeft,
+            });
+        };
+
+        handleResize(); // Call on mount
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [modalHeight]);
 
     // Handle Escape key to close modal
     useEffect(() => {
@@ -71,7 +99,7 @@ const ModalWindow = ({
     };
 
     // Handle dragging by title bar
-    const handleMouseDown = (e) => {
+    const handleDragStart = (e) => {
         const modal = modalRef.current;
 
         if (typeof onMouseDown === "function") {
@@ -82,8 +110,10 @@ const ModalWindow = ({
         const offsetY = e.clientY - modal.getBoundingClientRect().top;
 
         const handleMouseMove = (moveEvent) => {
-            modal.style.left = `${moveEvent.clientX - offsetX}px`;
-            modal.style.top = `${moveEvent.clientY - offsetY}px`;
+            setModalPosition({
+                top: `${moveEvent.clientY - offsetY}px`,
+                left: `${moveEvent.clientX - offsetX}px`,
+            });
         };
 
         const stopDragging = () => {
@@ -91,10 +121,8 @@ const ModalWindow = ({
             document.removeEventListener("mouseup", stopDragging);
         };
 
-        if (e.target.closest(".modal-titlebar")) {
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", stopDragging);
-        }
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", stopDragging);
     };
 
     // Handle maximize toggle
@@ -109,9 +137,17 @@ const ModalWindow = ({
         if (toggledMaximized) {
             setModalWidth(window.innerWidth - 20);
             setModalHeight(window.innerHeight - 20);
+            setModalPosition({
+                top: "10px",
+                left: "10px",
+            });
         } else {
-            setModalWidth(450);
+            setModalWidth(window.innerWidth < 600 ? 300 : 450);
             setModalHeight(450);
+            setModalPosition({
+                top: `calc(50vh - ${450 / 2}px)`,
+                left: `calc(50vw - ${modalWidth / 2}px)`,
+            });
         }
     };
 
@@ -122,8 +158,8 @@ const ModalWindow = ({
             ref={modalRef}
             style={{
                 position: "absolute",
-                top: isMaximized ? "10px" : "calc(50vh - 250px)",
-                left: isMaximized ? "10px" : "calc(50vw - 250px)",
+                top: modalPosition.top,
+                left: modalPosition.left,
                 width: `${modalWidth}px`,
                 height: `${modalHeight}px`,
                 backgroundColor: "#fff",
@@ -133,7 +169,6 @@ const ModalWindow = ({
                 zIndex: zIndex,
                 ...customStyles.container,
             }}
-            onMouseDown={handleMouseDown}
         >
             <div
                 className="modal-titlebar"
@@ -150,6 +185,7 @@ const ModalWindow = ({
                     cursor: isMaximized ? "default" : "move",
                     ...customStyles.titleBar,
                 }}
+                onMouseDown={handleDragStart}
             >
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     {icon && <img src={icon} alt={`${title} Icon`} style={{ height: "20px", width: "20px" }} />}
@@ -214,14 +250,7 @@ const ModalWindow = ({
                         ...customStyles.menuBar,
                     }}
                 >
-                    {customMenuBar ? customMenuBar : (
-                        <>
-                            <span style={{ marginRight: "15px" }} className="pointer">File</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Edit</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Search</span>
-                            <span style={{ marginRight: "15px" }} className="pointer">Help</span>
-                        </>
-                    )}
+                    {customMenuBar}
                 </div>
             )}
 
@@ -265,7 +294,7 @@ const ModalWindow = ({
             )}
 
             <div
-                onMouseDown={startResizing}
+                onMouseDown={(e) => startResizing(e)}
                 style={{
                     width: "15px",
                     height: "15px",

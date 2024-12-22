@@ -12,13 +12,12 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
         style={{
             position: "absolute",
             width: "20%",
-            height: "215px",
+            height: "35dvh",
+            minHeight: "200px",
             minWidth: "250px",
-            bottom: "60px",
+            bottom: "100%",
             left: "0",
             display: "flex",
-            flexDirection: "row",
-            alignItems: "stretch",
         }}
     >
         <div
@@ -31,10 +30,10 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                 color: "#c0c0c0",
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
-                fontSize: "2.0rem",
+                fontSize: "1.5rem",
                 fontWeight: "bold",
                 textAlign: "center",
-                height: "200px",
+                height: "100%",
             }}
         >
             <p>Windows</p>
@@ -48,7 +47,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             }}
         >
             <MenuListItem
-                style={{ height: "50px", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem" }}
                 onClick={() => window.open("https://x.com/windows95cto", "_blank")}
             >
                 <img
@@ -64,7 +63,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             </MenuListItem>
 
             <MenuListItem
-                style={{ height: "50px", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem" }}
                 onClick={() => window.open("https://t.me/Windows95Portal", "_blank")}
             >
                 <img
@@ -80,7 +79,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
             <MenuListItem
                 onClick={() => window.open("https://discord.com/invite/ke75Qvv2yP", "_blank")}
-                style={{ height: "50px", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem" }}
             >
                 <img
                     src={discord}
@@ -95,7 +94,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             </MenuListItem>
 
             <MenuListItem
-                style={{ height: "50px", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem" }}
                 onClick={() => window.open("https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump", "_blank")}
             >
                 <img

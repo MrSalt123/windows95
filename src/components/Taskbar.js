@@ -24,14 +24,14 @@ const Taskbar = ({
                 position: "fixed",
                 bottom: "0px",
                 width: "100%",
-                height: "60px",
+                height: "9%",
+                minHeight: "40px",
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "space-between",
                 backgroundColor: "#c0c0c0",
                 borderTop: "2px solid #ffffff",
                 borderBottom: "2px solid #808080",
-                padding: "0 10px",
+                padding: "5px, 1px",
             }}
         >
             {/* Start Button & Search */}
@@ -51,20 +51,23 @@ const Taskbar = ({
                     active={false}
                     style={{
                         fontWeight: "bold",
-                        height: "48px",
+                        height: "90%",
                         border: "none",
                         backgroundColor: "transparent",
-
-                        width: "30%",
-                        minWidth: "80px",
+                        left: "5px",
+                        width: "100%",
+                        minWidth: "50px",
                         display: "flex",
+                        marginRight:"10px" 
                     }}
                 >
                     <img
                         src={win95Logo}
                         alt="Start Icon"
                         style={{
-                            height: "40px",
+                            minWidth: "35px",
+                            height: "80%",
+                            minHeight: "20px",
                             marginRight: "10px",
                         }}
                     />
@@ -75,15 +78,19 @@ const Taskbar = ({
 
                 {startMenuOpen && <StartMenu ref={menuRef} handleIconClick={handleIconClick} />}
 
-                <TextInput
-                    variant="flat"
-                    placeholder="Search..."
-                    width={200}
-                    style={{
-                        height: "50px",
-                        width: "20dvw",
-                    }}
-                />
+                {windowWidth >= 600 && (
+                    <TextInput
+                        variant="flat"
+                        placeholder="Search..."
+                        width={200}
+                        style={{
+                            height: "90%",
+                            width: "18dvw",
+                            visibility: "hidden",
+                            display: "none",
+                        }}
+                    />
+                )}
             </div>
 
             {/* Taskbar Tabs (Modals) */}
@@ -92,7 +99,7 @@ const Taskbar = ({
                     display: "flex",
                     alignItems: "center",
                     margin: "0px 5px",
-                    gap: "10px",
+                    gap: "5px",
                     flex: 1,
                 }}
             >
@@ -113,7 +120,8 @@ const Taskbar = ({
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                height: "50px",
+                                height: "100%",
+                                top: "1px",
                                 width: "13vw",
                                 minWidth: "60px",
                                 backgroundColor: "#c0c0c0",
@@ -166,8 +174,8 @@ const Taskbar = ({
                                 }}
                                 style={{
                                     position: "absolute",
-                                    top: "10px",
-                                    right: "10px",
+                                    top: "10%",
+                                    right: "5%",
                                     height: "16px",
                                     width: "16px",
                                     color: "black",
@@ -179,7 +187,6 @@ const Taskbar = ({
                             >
                                 ✕
                             </button>
-
                         </div>
                     );
                 })}
@@ -189,7 +196,7 @@ const Taskbar = ({
             <div style={{ paddingRight: "4px" }}>
                 <div
                     style={{
-                        height: "50px",
+                        height: "100%",
                         width: "5vw",
                         minWidth: "80px",
                         fontSize: "1.1rem",
