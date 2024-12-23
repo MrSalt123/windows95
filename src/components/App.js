@@ -19,6 +19,7 @@ const App = () => {
     const [time, setTime] = useState("");
     const [startMenuOpen, setStartMenuOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const menuRef = useRef(null);
     const startButtonRef = useRef(null); // Reference for Start button
 
@@ -130,6 +131,15 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+            setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
         <div>
             <GlobalStyles />
@@ -234,6 +244,7 @@ const App = () => {
                                         left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
                                     },
                             }}
+                            isMobile={isMobile}
                         />
                     );
                 })}
