@@ -146,9 +146,9 @@ const App = () => {
 
                 {/* Desktop Icons */}
                 <div className="absolute top-[2%] left-[1vw] text-white text-center flex flex-col gap-5"
-                                 style={{
-                                    height: "auto",
-                                }}>
+                    style={{
+                        height: "auto",
+                    }}>
 
                     {desktopItems.map((item) => (
                         <div
@@ -190,6 +190,19 @@ const App = () => {
                     const zIndex = zOrder.indexOf(item.id) + 1;
                     const offset = openModals[item.id]?.offset || 0;
 
+                    // Adjust modal dimensions for smaller screens
+                    const isMobile = windowWidth < 600;
+                    const modalWidth = isMobile ? windowWidth * 0.9 : 450; // 90% width for mobile, 450px for desktop
+                    const modalHeight = isMobile ? window.innerHeight * 0.8 : 450; // 80% height for mobile, 450px for desktop
+
+                    // Dynamically calculate position for both mobile and desktop
+                    const topPosition = isMobile
+                        ? (window.innerHeight - modalHeight) / 2 // Center vertically for mobile
+                        : `calc(50vh - ${modalHeight / 2}px + ${offset}px)`;
+                    const leftPosition = isMobile
+                        ? (windowWidth - modalWidth) / 2 // Center horizontally for mobile
+                        : `calc(50vw - ${modalWidth / 2}px + ${offset}px)`;
+
                     return (
                         <ModalWindow
                             key={item.id}
@@ -206,7 +219,7 @@ const App = () => {
                             zIndex={zIndex}
                             customMenuBar={item.customMenuBar}
                             customStatusBar={item.customStatusBar}
-                            showMenuBar={item.showMenuBar} 
+                            showMenuBar={item.showMenuBar}
                             showStatusBar={item.showStatusBar}
                             customStyles={{
                                 container: modalState.isMaximized
@@ -214,13 +227,11 @@ const App = () => {
                                         top: "0px",
                                         left: "0px",
                                         width: "100vw",
-                                        height: `calc(100vh - ${headerHeight}px)`,
+                                        height: `calc(100dvh - ${headerHeight}px)`,
                                     }
                                     : {
-                                        top: `calc(50vh - ${60 / 2}% + ${offset}px)`,
-                                        left: `calc(50vw - ${70 / 2}% + ${offset}px)`,
-
-
+                                        top: `calc(50vh - ${450 / 2}px + ${offset}px)`,
+                                        left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
                                     },
                             }}
                         />
