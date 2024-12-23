@@ -232,7 +232,7 @@ const ModalWindow = ({
                         }}
                         title={isMaximized ? "Restore" : "Maximize"}
                     >
-                        {isMaximized ? "🗗" : "🗖"}
+                        &#10066;
                     </button>
 
                     {/* Close Button */}
