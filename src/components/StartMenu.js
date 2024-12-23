@@ -1,10 +1,16 @@
+/***************************************************************************
+ *                           START MENU COMPONENT
+ * Reusable start menu with various social links and actions.
+ ***************************************************************************/
+
 import React from "react";
 import { MenuList, MenuListItem } from "react95";
 import xIco from "../assets/images/x-ico.png";
 import teleIco from "../assets/images/tele-ico.png";
 import pumpIco from "../assets/images/pump-ico.png";
 import discord from "../assets/images/discord_ico.png";
-
+// Import TikTok icon placeholder (replace the path with the actual image later)
+import tiktokIco from "../assets/images/tiktok_ico.png"; // TODO: Add TikTok icon image
 
 const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
     <MenuList
@@ -20,6 +26,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             display: "flex",
         }}
     >
+        {/* Sidebar with "Windows 95" branding */}
         <div
             style={{
                 display: "flex",
@@ -40,14 +47,18 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             <p style={{ color: "white" }}>95</p>
         </div>
 
+        {/* Menu Items Container */}
         <div
             style={{
                 flex: "1",
                 backgroundColor: "#C1C1C1",
+                display: "flex",
+                flexDirection: "column",
             }}
         >
+            {/* X.com Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
                 onClick={() => window.open("https://x.com/windows95cto", "_blank")}
             >
                 <img
@@ -55,15 +66,18 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     style={{
                         position: "absolute",
                         width: "20px",
-                        left: "15px",
+                        left: "22px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                     }}
                     alt="X Icon"
                 />
-                <p style={{ transform: "translateX(50px)" }}>X</p>
+                <p style={{ marginLeft: "50px" }}>X</p>
             </MenuListItem>
 
+            {/* Telegram Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
                 onClick={() => window.open("https://t.me/Windows95Portal", "_blank")}
             >
                 <img
@@ -71,30 +85,37 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     style={{
                         position: "absolute",
                         width: "30px",
+                        left: "15px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                     }}
                     alt="Telegram Icon"
                 />
-                <p style={{ transform: "translateX(50px)" }}>Telegram</p>
+                <p style={{ marginLeft: "50px" }}>Telegram</p>
             </MenuListItem>
 
+            {/* Discord Item */}
             <MenuListItem
                 onClick={() => window.open("https://discord.com/invite/ke75Qvv2yP", "_blank")}
-                style={{ height: "20%", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
             >
                 <img
                     src={discord}
                     style={{
                         position: "absolute",
                         width: "27px",
-                        left: "11px",
+                        left: "15px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                     }}
-                    alt="Dicord icon"
+                    alt="Discord Icon"
                 />
-                <p style={{ transform: "translateX(50px)" }}>Discord</p>
+                <p style={{ marginLeft: "50px" }}>Discord</p>
             </MenuListItem>
 
+            {/* PumpFun Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem" }}
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
                 onClick={() => window.open("https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump", "_blank")}
             >
                 <img
@@ -102,11 +123,32 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     style={{
                         position: "absolute",
                         width: "30px",
-                        left: "8px",
+                        left: "15px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                     }}
                     alt="Pump Icon"
                 />
-                <p style={{ transform: "translateX(50px)" }}>PumpFun</p>
+                <p style={{ marginLeft: "50px" }}>PumpFun</p>
+            </MenuListItem>
+
+            {/* TikTok Item */}
+            <MenuListItem
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                onClick={() => window.open("https://www.tiktok.com/@windows95onsol", "_blank")} // Replace with your TikTok profile URL
+            >
+                <img
+                    src={tiktokIco}
+                    style={{
+                        position: "absolute",
+                        width: "30px",
+                        left: "13px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                    }}
+                    alt="TikTok Icon"
+                />
+                <p style={{ marginLeft: "50px" }}>TikTok</p>
             </MenuListItem>
         </div>
     </MenuList>
