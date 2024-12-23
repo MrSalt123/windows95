@@ -214,11 +214,13 @@ const App = () => {
                                         top: "0px",
                                         left: "0px",
                                         width: "100vw",
-                                        height: `calc(100dvh - ${headerHeight}px)`,
+                                        height: `calc(100vh - ${headerHeight}px)`,
                                     }
                                     : {
-                                        top: `calc(50vh - ${450 / 2}px + ${offset}px)`,
-                                        left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
+                                        top: `calc(50vh - ${60 / 2}% + ${offset}px)`,
+                                        left: `calc(50vw - ${70 / 2}% + ${offset}px)`,
+
+
                                     },
                             }}
                         />
