@@ -19,9 +19,10 @@ const App = () => {
     const [time, setTime] = useState("");
     const [startMenuOpen, setStartMenuOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const menuRef = useRef(null);
     const startButtonRef = useRef(null); // Reference for Start button
+
+    const isMobile = windowWidth < 600;
 
     // Header height to prevent modal overlap
     const headerHeight = 60;
@@ -131,15 +132,6 @@ const App = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-            setIsMobile(window.innerWidth <= 768);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
     return (
         <div>
             <GlobalStyles />
@@ -201,7 +193,6 @@ const App = () => {
                     const offset = openModals[item.id]?.offset || 0;
 
                     // Adjust modal dimensions for smaller screens
-                    const isMobile = windowWidth < 600;
                     const modalWidth = isMobile ? windowWidth * 0.9 : 450; // 90% width for mobile, 450px for desktop
                     const modalHeight = isMobile ? window.innerHeight * 0.8 : 450; // 80% height for mobile, 450px for desktop
 
@@ -222,6 +213,7 @@ const App = () => {
                             content={item.content}
                             isOpen={modalState.isOpen}
                             isVisible={modalState.isVisible}
+                            isMobile={isMobile}
                             onClose={() => closeModal(item.id)}
                             onMinimize={() => handleMinimize(item.id)}
                             onMaximizeToggle={() => toggleMaximize(item.id)}
@@ -244,7 +236,6 @@ const App = () => {
                                         left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
                                     },
                             }}
-                            isMobile={isMobile}
                         />
                     );
                 })}

@@ -29,6 +29,10 @@ const ModalWindow = ({
     const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
 
+    useEffect(() => {
+        console.log("Modal Width:", modalWidth);
+    }, [modalWidth]);
+
     // Handle Escape key to close modal
     useEffect(() => {
         if (!isOpen) return;
@@ -47,18 +51,28 @@ const ModalWindow = ({
     // Reset modal state when it is closed
     useEffect(() => {
         if (!isVisible) {
-            setModalWidth(450);    // Reset width to default
-            setModalHeight(450);   // Reset height to default
+            console.log("change");
+
+            // Set width and height based on whether it's mobile
+            setModalWidth(isMobile ? window.innerWidth - 20 : 450);
+            setModalHeight(isMobile ? window.innerHeight - 20 : 450);
             setIsMaximized(false); // Reset maximization state
 
-            // Optional: Reset position to center if needed
-            // This assumes initial positioning is handled externally or via CSS
+            // Reset position to center
             if (modalRef.current) {
-                modalRef.current.style.top = "calc(50vh - 225px)"; // 450px height / 2
-                modalRef.current.style.left = "calc(50vw - 225px)"; // 450px width / 2
+                if (isMobile) {
+                    // Center the modal with padding for mobile
+                    modalRef.current.style.top = "10px"; // 10px padding from top
+                    modalRef.current.style.left = "10px"; // 10px padding from left
+                } else {
+                    // Center the modal for desktop
+                    modalRef.current.style.top = `calc(50vh - ${450 / 2}px)`; // Center vertically
+                    modalRef.current.style.left = `calc(50vw - ${450 / 2}px)`; // Center horizontally
+                }
             }
         }
-    }, [isVisible]);
+    }, [isVisible, isMobile]);
+
 
     // Handle resizing
     const startResizing = (e) => {
