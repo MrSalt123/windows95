@@ -19,13 +19,14 @@ const App = () => {
     const [time, setTime] = useState("");
     const [startMenuOpen, setStartMenuOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
     const menuRef = useRef(null);
     const startButtonRef = useRef(null); // Reference for Start button
 
     const isMobile = windowWidth < 600;
 
     // Header height to prevent modal overlap
-    const headerHeight = 60;
+    const headerHeight = 40;
 
     // Initialize modal states for desktop items
     const initialState = {};
@@ -232,8 +233,8 @@ const App = () => {
                                         height: `calc(100dvh - ${headerHeight}px)`,
                                     }
                                     : {
-                                        top: `calc(50vh - ${450 / 2}px + ${offset}px)`,
-                                        left: `calc(50vw - ${450 / 2}px + ${offset}px)`,
+                                        top: `calc(50vh - ${500 / 2}px + ${offset}px)`,
+                                        left: `calc(50vw - ${300 / 2}px + ${offset}px)`,
                                     },
                             }}
                         />

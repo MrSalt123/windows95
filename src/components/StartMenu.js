@@ -9,16 +9,16 @@ import xIco from "../assets/images/x-ico.png";
 import teleIco from "../assets/images/tele-ico.png";
 import pumpIco from "../assets/images/pump-ico.png";
 import discord from "../assets/images/discord_ico.png";
-// Import TikTok icon placeholder (replace the path with the actual image later)
-import tiktokIco from "../assets/images/tiktok_ico.png"; // TODO: Add TikTok icon image
+import tiktokIco from "../assets/images/tiktok_ico.png";
+import instaIco from "../assets/images/Instaico.png";
 
 const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
     <MenuList
         ref={ref}
         style={{
-            position: "absolute",
+            position: "absolute" ,
             width: "20%",
-            height: "35dvh",
+            height: "50dvh",
             minHeight: "200px",
             minWidth: "250px",
             bottom: "100%",
@@ -37,7 +37,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                 color: "#c0c0c0",
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
-                fontSize: "1.5rem",
+                fontSize: "1.8rem",
                 fontWeight: "bold",
                 textAlign: "center",
                 height: "100%",
@@ -135,7 +135,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             {/* TikTok Item */}
             <MenuListItem
                 style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
-                onClick={() => window.open("https://www.tiktok.com/@windows95onsol", "_blank")} // Replace with your TikTok profile URL
+                onClick={() => window.open("https://www.tiktok.com/@windows95onsol", "_blank")}
             >
                 <img
                     src={tiktokIco}
@@ -149,6 +149,25 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     alt="TikTok Icon"
                 />
                 <p style={{ marginLeft: "50px" }}>TikTok</p>
+            </MenuListItem>
+
+              {/* Instagram Item */}
+              <MenuListItem
+                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                onClick={() => window.open("instagram.com/windows95onsol", "_blank")}
+            >
+                <img
+                    src={instaIco}
+                    style={{
+                        position: "absolute",
+                        width: "30px",
+                        left: "13px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                    }}
+                    alt="Instagram Icon"
+                />
+                <p style={{ marginLeft: "50px" }}>Instagram</p>
             </MenuListItem>
         </div>
     </MenuList>

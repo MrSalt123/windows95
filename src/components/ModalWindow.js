@@ -24,19 +24,29 @@ const ModalWindow = ({
     customStatusBar,
     customTitleBar,
 }) => {
-    const [modalWidth, setModalWidth] = useState(isMobile ? window.innerWidth - 20 : 450);
-    const [modalHeight, setModalHeight] = useState(isMobile ? window.innerHeight - 20 : 450);
+    const [modalWidth, setModalWidth] = useState(isMobile ? 300 : 450); // Smaller width for mobile
+    const [modalHeight, setModalHeight] = useState(isMobile ? 300 : 450); // Smaller height for mobile
     const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
+    
+        const centerModal = () => {
+            if (modalRef.current) {
+                const widthOffset = modalWidth / 2;
+                const heightOffset = modalHeight / 2;
+                modalRef.current.style.top = `calc(50vh - ${heightOffset}px)`;
+                modalRef.current.style.left = `calc(50vw - ${widthOffset}px)`;
+            }
+        };
+
 
     useEffect(() => {
         console.log("Modal Width:", modalWidth);
     }, [modalWidth]);
-
+    
     // Handle Escape key to close modal
     useEffect(() => {
         if (!isOpen) return;
-
+    
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
                 onClose();
@@ -47,31 +57,33 @@ const ModalWindow = ({
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [isOpen, onClose]);
-
+    
     // Reset modal state when it is closed
     useEffect(() => {
         if (!isVisible) {
-            console.log("change");
-
+            console.log("Modal state reset");
+    
             // Set width and height based on whether it's mobile
-            setModalWidth(isMobile ? window.innerWidth - 20 : 450);
-            setModalHeight(isMobile ? window.innerHeight - 20 : 450);
+            setModalWidth(isMobile ? 300 : 450); // Adjusted for smaller size on mobile
+            setModalHeight(isMobile ? 300 : 450); // Adjusted for smaller size on mobile
             setIsMaximized(false); // Reset maximization state
-
+    
             // Reset position to center
             if (modalRef.current) {
                 if (isMobile) {
-                    // Center the modal with padding for mobile
-                    modalRef.current.style.top = "10px"; // 10px padding from top
-                    modalRef.current.style.left = "10px"; // 10px padding from left
+                    // Center the modal with fixed offsets for mobile
+                    modalRef.current.style.top = `calc(50vh - 150px)`; // Center vertically (150px = 300/2)
+                    modalRef.current.style.left = `calc(50vw - 150px)`; // Center horizontally (150px = 300/2)
                 } else {
                     // Center the modal for desktop
-                    modalRef.current.style.top = `calc(50vh - ${450 / 2}px)`; // Center vertically
-                    modalRef.current.style.left = `calc(50vw - ${450 / 2}px)`; // Center horizontally
+                    modalRef.current.style.top = `calc(50vh - 225px)`; // Center vertically (225px = 450/2)
+                    modalRef.current.style.left = `calc(50vw - 225px)`; // Center horizontally (225px = 450/2)
                 }
             }
         }
     }, [isVisible, isMobile]);
+    
+    
 
 
     // Handle resizing
@@ -179,6 +191,7 @@ const ModalWindow = ({
             ref={modalRef}
             style={{
                 position: "absolute",
+                
                 top: isMaximized ? "10px" : "calc(50vh - 225px)", // 450px height / 2
                 left: isMaximized ? "10px" : "calc(50vw - 225px)", // 450px width / 2
                 width: `${modalWidth}px`,
