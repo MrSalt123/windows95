@@ -7,7 +7,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import { Button} from "react95";
+import { Button } from "react95";
 
 const DEXSCREENER_PAIR_ADDRESS = "3gbbkbvn95e1uger8mynspjcldu59johk9rmcd24kdhz";
 const CONTRACT_ADDRESS = "G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump";
@@ -103,6 +103,7 @@ const TopIndicators = () => {
             >
 
                 <Button
+                    className="pointer"
                     style={{
                         color: "white",
                         fontWeight: "bold",

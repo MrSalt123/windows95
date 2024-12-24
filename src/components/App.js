@@ -23,7 +23,7 @@ const App = () => {
     const menuRef = useRef(null);
     const startButtonRef = useRef(null); // Reference for Start button
 
-    const isMobile = windowWidth < 600;
+    const isMobile = windowWidth <= 768;
 
     // Header height to prevent modal overlap
     const headerHeight = 40;
@@ -194,17 +194,17 @@ const App = () => {
                     const offset = openModals[item.id]?.offset || 0;
 
                     // Adjust modal dimensions for smaller screens
-                    const modalWidth = isMobile ? windowWidth * 0.9 : 450; // 90% width for mobile, 450px for desktop
-                    const modalHeight = isMobile ? window.innerHeight * 0.8 : 450; // 80% height for mobile, 450px for desktop
+                    const isMobile = windowWidth <= 768;
+                    const modalWidth = isMobile ? 300 : 450; // 90% width for mobile, 450px for desktop
+                    const modalHeight = isMobile ? 300 : 450; // 80% height for mobile, 450px for desktop
 
                     // Dynamically calculate position for both mobile and desktop
                     const topPosition = isMobile
                         ? (window.innerHeight - modalHeight) / 2 // Center vertically for mobile
-                        : `calc(50vh - ${modalHeight / 2}px + ${offset}px)`;
+                        : `calc(${window.innerHeight / 2}px - ${modalHeight / 2}px + ${offset}px)`;
                     const leftPosition = isMobile
-                        ? (windowWidth - modalWidth) / 2 // Center horizontally for mobile
+                        ? `${(window.innerWidth - modalWidth) / 2 + offset}px` // Center horizontally for mobile with offset
                         : `calc(50vw - ${modalWidth / 2}px + ${offset}px)`;
-
                     return (
                         <ModalWindow
                             key={item.id}
@@ -233,13 +233,14 @@ const App = () => {
                                         height: `calc(100dvh - ${headerHeight}px)`,
                                     }
                                     : {
-                                        top: `calc(50vh - ${500 / 2}px + ${offset}px)`,
-                                        left: `calc(50vw - ${300 / 2}px + ${offset}px)`,
+                                        top: topPosition,
+                                        left: leftPosition,
                                     },
                             }}
                         />
                     );
                 })}
+
 
             </ThemeProvider>
         </div>

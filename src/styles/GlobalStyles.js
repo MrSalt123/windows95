@@ -48,10 +48,6 @@ const GlobalStyles = createGlobalStyle`
       cursor: url(${hand}), pointer;
   }
 
-  img:hover, div:hover, button:hover, a:hover {
-      cursor: url(${hand}), pointer;
-  }
-
 `;
 
 export default GlobalStyles;

@@ -250,22 +250,7 @@ const desktopItems = [
         },
     },
 
-    {
-        id: "music",
-        name: "Music",
-        icon: folderIco,
-        content: <MusicFolderContent />,
-        title: "Music - Folder",
-        showMenuBar: false,
-        showStatusBar: false,
-        customStyles: {
-            main: {
-                backgroundColor: "#f0f0f0",
-                color: "black",
-                padding: "10px",
-            },
-        },
-    },
+    
 
     
 ];
