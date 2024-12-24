@@ -44,16 +44,12 @@ const GlobalStyles = createGlobalStyle`
     -ms-user-select: none;
   }
 
-  body {
-    cursor: url('../assets/cursors/hand0.png'), auto;
-}
-
   .pointer {
-      cursor: url('../assets/cursors/hand0.png'), pointer;
+      cursor: url(${hand}), pointer;
   }
 
   img:hover, div:hover, button:hover, a:hover {
-      cursor: url('../assets/cursors/hand0.pngg'), pointer;
+      cursor: url(${hand}), pointer;
   }
 
 `;
