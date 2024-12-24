@@ -4,6 +4,9 @@ import notepad from "../assets/images/notepad.png";
 import globe from "../assets/images/globe.png";
 import roadmap from "../assets/images/roadmap.png";
 import chart from "../assets/images/chart-ico.png";
+import folderIco from "../assets/images/folderIco.png";
+import MusicFolderContent from "../utils/musicFolder";
+
 
 const msPaintMenuBar = (
     <>
@@ -246,6 +249,27 @@ const desktopItems = [
             },
         },
     },
+
+    {
+        id: "music",
+        name: "Music",
+        icon: folderIco,
+        content: <MusicFolderContent />,
+        title: "Music - Folder",
+        showMenuBar: false,
+        showStatusBar: false,
+        customStyles: {
+            main: {
+                backgroundColor: "#f0f0f0",
+                color: "black",
+                padding: "10px",
+            },
+        },
+    },
+
+    
 ];
+
+
 
 export default desktopItems;

@@ -29,15 +29,6 @@ const ModalWindow = ({
     const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
     
-        const centerModal = () => {
-            if (modalRef.current) {
-                const widthOffset = modalWidth / 2;
-                const heightOffset = modalHeight / 2;
-                modalRef.current.style.top = `calc(50vh - ${heightOffset}px)`;
-                modalRef.current.style.left = `calc(50vw - ${widthOffset}px)`;
-            }
-        };
-
 
     useEffect(() => {
         console.log("Modal Width:", modalWidth);
