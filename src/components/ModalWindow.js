@@ -28,6 +28,11 @@ const ModalWindow = ({
     const [modalHeight, setModalHeight] = useState(isMobile ? 300 : 450); // Smaller height for mobile
     const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
+
+
+    useEffect(() => {
+        console.log("Modal Width:", modalWidth);
+    }, [modalWidth]);
     
     // Handle Escape key to close modal
     useEffect(() => {
@@ -47,6 +52,7 @@ const ModalWindow = ({
     // Reset modal state when it is closed
     useEffect(() => {
         if (!isVisible) {
+            console.log("Modal state reset");
     
             // Set width and height based on whether it's mobile
             setModalWidth(isMobile ? 300 : 450); // Adjusted for smaller size on mobile
@@ -57,6 +63,7 @@ const ModalWindow = ({
             if (modalRef.current) {
                 if (isMobile) {
                     // Center the modal with fixed offsets for mobile
+                
                     modalRef.current.style.top = `calc(50vh - 150px)`; // Center vertically (150px = 300/2)
                     modalRef.current.style.left = `calc(50vw - 150px)`; // Center horizontally (150px = 300/2)
                 } else {
@@ -68,45 +75,72 @@ const ModalWindow = ({
         }
     }, [isVisible, isMobile]);
     
-    
 
 
-    // Handle resizing
+    // Handle resizing (supports both mouse and touch events)
     const startResizing = (e) => {
         e.stopPropagation();
         e.preventDefault();
 
         if (isMaximized) return; // Prevent resizing when maximized
 
-        const startX = e.clientX;
-        const startY = e.clientY;
+        // Determine if the event is a touch event
+        const isTouchEvent = e.type === "touchstart";
+
+        // Extract initial coordinates based on event type
+        const startX = isTouchEvent ? e.touches[0].clientX : e.clientX;
+        const startY = isTouchEvent ? e.touches[0].clientY : e.clientY;
         const startW = modalWidth;
         const startH = modalHeight;
 
+        // Define the resize handler
         const doResize = (moveEvent) => {
+            // Prevent default behavior for touch events
+            if (isTouchEvent) {
+                moveEvent.preventDefault();
+            }
+
+            // Extract movement coordinates
+            const moveX = isTouchEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+            const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+
+            // Calculate new dimensions
             const newWidth = Math.max(
                 300,
-                Math.min(window.innerWidth - 40, startW + (moveEvent.clientX - startX))
-            ); // Minimum width of 300, maximum with padding
+                Math.min(window.innerWidth - 40, startW + (moveX - startX))
+            ); // Minimum width of 300px, maximum with 40px padding
             const newHeight = Math.max(
                 200,
-                Math.min(window.innerHeight - 40, startH + (moveEvent.clientY - startY))
-            ); // Minimum height of 200, maximum with padding
+                Math.min(window.innerHeight - 40, startH + (moveY - startY))
+            ); // Minimum height of 200px, maximum with 40px padding
 
+            // Update modal dimensions
             setModalWidth(newWidth);
             setModalHeight(newHeight);
         };
 
+        // Define the stop resizing handler
         const stopResizing = () => {
-            window.removeEventListener("mousemove", doResize);
-            window.removeEventListener("mouseup", stopResizing);
+            if (isTouchEvent) {
+                window.removeEventListener("touchmove", doResize);
+                window.removeEventListener("touchend", stopResizing);
+            } else {
+                window.removeEventListener("mousemove", doResize);
+                window.removeEventListener("mouseup", stopResizing);
+            }
         };
 
-        window.addEventListener("mousemove", doResize);
-        window.addEventListener("mouseup", stopResizing);
+        // Attach the appropriate event listeners based on event type
+        if (isTouchEvent) {
+            window.addEventListener("touchmove", doResize, { passive: false });
+            window.addEventListener("touchend", stopResizing);
+        } else {
+            window.addEventListener("mousemove", doResize);
+            window.addEventListener("mouseup", stopResizing);
+        }
     };
 
-    // Handle dragging by title bar
+    // Handle dragging by title bar (supports both mouse and touch events)
     const handleMouseDown = (e) => {
         const modal = modalRef.current;
 
@@ -114,22 +148,52 @@ const ModalWindow = ({
             onMouseDown();
         }
 
-        const offsetX = e.clientX - modal.getBoundingClientRect().left;
-        const offsetY = e.clientY - modal.getBoundingClientRect().top;
+        // Determine if the event is a touch event
+        const isTouchEvent = e.type === "touchstart";
 
-        const handleMouseMove = (moveEvent) => {
-            modal.style.left = `${moveEvent.clientX - offsetX}px`;
-            modal.style.top = `${moveEvent.clientY - offsetY}px`;
+        // Extract initial coordinates based on event type
+        const clientX = isTouchEvent ? e.touches[0].clientX : e.clientX;
+        const clientY = isTouchEvent ? e.touches[0].clientY : e.clientY;
+
+        const offsetX = clientX - modal.getBoundingClientRect().left;
+        const offsetY = clientY - modal.getBoundingClientRect().top;
+
+        // Define the move handler
+        const handleMove = (moveEvent) => {
+            // Prevent default behavior for touch events
+            if (isTouchEvent) {
+                moveEvent.preventDefault();
+            }
+
+            // Extract movement coordinates
+            const moveX = isTouchEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+            const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+
+            // Update modal position
+            modal.style.left = `${moveX - offsetX}px`;
+            modal.style.top = `${moveY - offsetY}px`;
         };
 
+        // Define the stop dragging handler
         const stopDragging = () => {
-            document.removeEventListener("mousemove", handleMouseMove);
-            document.removeEventListener("mouseup", stopDragging);
+            if (isTouchEvent) {
+                document.removeEventListener("touchmove", handleMove);
+                document.removeEventListener("touchend", stopDragging);
+            } else {
+                document.removeEventListener("mousemove", handleMove);
+                document.removeEventListener("mouseup", stopDragging);
+            }
         };
 
+        // Attach the appropriate event listeners based on event type
         if (e.target.closest(".modal-titlebar")) {
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", stopDragging);
+            if (isTouchEvent) {
+                document.addEventListener("touchmove", handleMove, { passive: false });
+                document.addEventListener("touchend", stopDragging);
+            } else {
+                document.addEventListener("mousemove", handleMove);
+                document.addEventListener("mouseup", stopDragging);
+            }
         }
     };
 
@@ -160,11 +224,15 @@ const ModalWindow = ({
                 modalRef.current.style.left = "10px";
             }
         } else {
-            setModalWidth(isMobile ? 300 : 450);
-            setModalHeight(isMobile ? 300 : 450);
+            setModalWidth(isMobile ? 300 : 450); // Reset to default width based on device
+            setModalHeight(isMobile ? 300 : 450); // Reset to default height based on device
             if (modalRef.current) {
-                modalRef.current.style.top = "calc(50vh - 225px)"; // Center vertically
-                modalRef.current.style.left = "calc(50vw - 225px)"; // Center horizontally
+                modalRef.current.style.top = isMobile
+                    ? "calc(50vh - 150px)" // Center vertically for mobile
+                    : "calc(50vh - 225px)"; // Center vertically for desktop
+                modalRef.current.style.left = isMobile
+                    ? "calc(50vw - 150px)" // Center horizontally for mobile
+                    : "calc(50vw - 225px)"; // Center horizontally for desktop
             }
         }
     };
@@ -176,6 +244,9 @@ const ModalWindow = ({
             ref={modalRef}
             style={{
                 position: "absolute",
+                
+                top: isMaximized ? "10px" : "calc(50vh - 225px)", // 450px height / 2
+                left: isMaximized ? "10px" : "calc(50vw - 225px)", // 450px width / 2
                 width: `${modalWidth}px`,
                 height: `${isMaximized ? `calc(100vh - 20px)` : `${modalHeight}px`}`,
                 backgroundColor: "#fff",
@@ -183,9 +254,11 @@ const ModalWindow = ({
                 display: isVisible ? "flex" : "none",
                 flexDirection: "column",
                 zIndex: zIndex,
+                overflow:"hidden",
                 ...customStyles.container,
             }}
             onMouseDown={handleMouseDown}
+            onTouchStart={handleMouseDown} // Added touch event handler for dragging
         >
 
             <div
@@ -203,6 +276,8 @@ const ModalWindow = ({
                     cursor: "move",
                     ...customStyles.titleBar,
                 }}
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleMouseDown} // Added touch event handler for dragging
             >
                 {customTitleBar ? customTitleBar : <span>{title}</span>}
                 <div style={{ display: "flex", gap: "5px" }}>
@@ -318,6 +393,7 @@ const ModalWindow = ({
             {!isMaximized && (
                 <div
                     onMouseDown={startResizing}
+                    onTouchStart={startResizing} // Added touch event handler for resizing
                     style={{
                         width: "15px",
                         height: "15px",
@@ -332,6 +408,7 @@ const ModalWindow = ({
                 ></div>
             )}
         </div>
-    );
-};
+        )
+    };
+
 export default ModalWindow;
