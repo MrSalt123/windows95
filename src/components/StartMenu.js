@@ -18,7 +18,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
         style={{
             position: "absolute" ,
             width: "20%",
-            height: "50dvh",
+            height: "100%",
             minHeight: "200px",
             minWidth: "250px",
             bottom: "100%",
@@ -58,7 +58,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
         >
             {/* X.com Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1rem", position: "relative" }}
                 onClick={() => window.open("https://x.com/windows95cto", "_blank")}
             >
                 <img
@@ -77,7 +77,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
             {/* Telegram Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1rem", position: "relative" }}
                 onClick={() => window.open("https://t.me/Windows95Portal", "_blank")}
             >
                 <img
@@ -97,7 +97,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
             {/* Discord Item */}
             <MenuListItem
                 onClick={() => window.open("https://discord.com/invite/ke75Qvv2yP", "_blank")}
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1em", position: "relative" }}
             >
                 <img
                     src={discord}
@@ -115,7 +115,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
             {/* PumpFun Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1rem", position: "relative" }}
                 onClick={() => window.open("https://pump.fun/coin/G8GdCEU4C7QrZTXKtpikGxDjp9xAAmT6Dmp4BfRypump", "_blank")}
             >
                 <img
@@ -134,7 +134,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
             {/* TikTok Item */}
             <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1rem", position: "relative" }}
                 onClick={() => window.open("https://www.tiktok.com/@windows95onsol", "_blank")}
             >
                 <img
@@ -153,7 +153,7 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
 
               {/* Instagram Item */}
               <MenuListItem
-                style={{ height: "20%", fontSize: "1.4rem", position: "relative" }}
+                style={{ height: "16.6666%", fontSize: "1.1rem", position: "relative" }}
                 onClick={() => window.open("instagram.com/windows95onsol", "_blank")}
             >
                 <img
@@ -169,6 +169,8 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                 />
                 <p style={{ marginLeft: "50px" }}>Instagram</p>
             </MenuListItem>
+
+            
         </div>
     </MenuList>
 ));

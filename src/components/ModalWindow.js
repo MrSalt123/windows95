@@ -1,9 +1,8 @@
 /***************************************************************************
  *                           MODAL COMPONENT
  * Reusable modal window that can show different content, menu bars, and 
- * status bars. Supports dragging, resizing, and custom styling.
+ * status bars. Supports dragging, resizing, stacking with offset, and custom styling.
  ***************************************************************************/
-
 import React, { useState, useEffect, useRef } from "react";
 
 const ModalWindow = ({
@@ -16,28 +15,51 @@ const ModalWindow = ({
     onMaximizeToggle,
     onMouseDown,
     customStyles = {},
-    zIndex,
+    zIndex = 1000, // Default zIndex
     isMobile,
     showMenuBar = true,
     showStatusBar = true,
     customMenuBar,
     customStatusBar,
     customTitleBar,
+    stackIndex = 0, // New prop for stacking
 }) => {
-    const [modalWidth, setModalWidth] = useState(isMobile ? 300 : 450); // Smaller width for mobile
-    const [modalHeight, setModalHeight] = useState(isMobile ? 300 : 450); // Smaller height for mobile
+    // Initialize modal dimensions based on device type
+    const [modalWidth, setModalWidth] = useState(isMobile ? 200 : 500); // Increased width for desktop
+    const [modalHeight, setModalHeight] = useState(isMobile ? 200 : 500); // Increased height for desktop
     const [isMaximized, setIsMaximized] = useState(false);
     const modalRef = useRef(null);
 
+    // Define the offset per stack index (in pixels)
+    const OFFSET_STEP = 20;
 
+    // Calculate offset based on stackIndex
+    const calculateOffset = () => {
+        if (isMaximized) return { topOffset: 0, leftOffset: 0 };
+        const topOffset = stackIndex * OFFSET_STEP;
+        const leftOffset = stackIndex * OFFSET_STEP;
+
+        // Ensure the modal doesn't go off-screen
+        const maxTopOffset = window.innerHeight - modalHeight - 40; // 20px padding top and bottom
+        const maxLeftOffset = window.innerWidth - modalWidth - 40; // 20px padding left and right
+
+        return {
+            topOffset: Math.min(topOffset, maxTopOffset),
+            leftOffset: Math.min(leftOffset, maxLeftOffset),
+        };
+    };
+
+    const { topOffset, leftOffset } = calculateOffset();
+
+    // Log modal width changes (for debugging)
     useEffect(() => {
         console.log("Modal Width:", modalWidth);
     }, [modalWidth]);
-    
+
     // Handle Escape key to close modal
     useEffect(() => {
         if (!isOpen) return;
-    
+
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
                 onClose();
@@ -48,34 +70,29 @@ const ModalWindow = ({
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [isOpen, onClose]);
-    
+
     // Reset modal state when it is closed
     useEffect(() => {
         if (!isVisible) {
             console.log("Modal state reset");
-    
+
             // Set width and height based on whether it's mobile
-            setModalWidth(isMobile ? 300 : 450); // Adjusted for smaller size on mobile
-            setModalHeight(isMobile ? 300 : 450); // Adjusted for smaller size on mobile
+            setModalWidth(isMobile ? 200 : 500); // Updated desktop width
+            setModalHeight(isMobile ? 200 : 500); // Updated desktop height
             setIsMaximized(false); // Reset maximization state
-    
-            // Reset position to center
+
+            // Reset position with offset based on stackIndex
             if (modalRef.current) {
-                if (isMobile) {
-                    // Center the modal with fixed offsets for mobile
-                
-                    modalRef.current.style.top = `calc(50vh - 150px)`; // Center vertically (150px = 300/2)
-                    modalRef.current.style.left = `calc(50vw - 150px)`; // Center horizontally (150px = 300/2)
-                } else {
-                    // Center the modal for desktop
-                    modalRef.current.style.top = `calc(50vh - 225px)`; // Center vertically (225px = 450/2)
-                    modalRef.current.style.left = `calc(50vw - 225px)`; // Center horizontally (225px = 450/2)
-                }
+                const { topOffset, leftOffset } = calculateOffset();
+                modalRef.current.style.top = isMobile
+                    ? `calc(50vh - ${modalHeight / 2}px) + ${topOffset}px`
+                    : `calc(50vh - ${modalHeight / 2}px) + ${topOffset}px`;
+                modalRef.current.style.left = isMobile
+                    ? `calc(50vw - ${modalWidth / 2}px) + ${leftOffset}px`
+                    : `calc(50vw - ${modalWidth / 2}px) + ${leftOffset}px`;
             }
         }
-    }, [isVisible, isMobile]);
-    
-
+    }, [isVisible, isMobile, stackIndex, modalHeight, modalWidth]);
 
     // Handle resizing (supports both mouse and touch events)
     const startResizing = (e) => {
@@ -105,16 +122,19 @@ const ModalWindow = ({
             const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
 
             // Calculate new dimensions
-            const newWidth = Math.max(
-                300,
-                Math.min(window.innerWidth - 40, startW + (moveX - startX))
-            ); // Minimum width of 300px, maximum with 40px padding
-            const newHeight = Math.max(
-                200,
-                Math.min(window.innerHeight - 40, startH + (moveY - startY))
-            ); // Minimum height of 200px, maximum with 40px padding
+            let newWidth = startW + (moveX - startX);
+            let newHeight = startH + (moveY - startY);
 
-            // Update modal dimensions
+            // Define minimum and maximum sizes
+            const minWidth = 300;
+            const minHeight = 200;
+            const maxWidth = isMobile ? window.innerWidth - 40 : window.innerWidth; // 20px padding on each side for mobile
+            const maxHeight = isMobile ? window.innerHeight - 40 : window.innerHeight; // 20px padding on top and bottom for mobile
+
+            // Clamp the new dimensions within the boundaries
+            newWidth = Math.max(minWidth, isMobile ? Math.min(newWidth, maxWidth) : newWidth);
+            newHeight = Math.max(minHeight, isMobile ? Math.min(newHeight, maxHeight) : newHeight);
+
             setModalWidth(newWidth);
             setModalHeight(newHeight);
         };
@@ -169,9 +189,23 @@ const ModalWindow = ({
             const moveX = isTouchEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
             const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
 
+            // Calculate new positions
+            let newLeft = moveX - offsetX;
+            let newTop = moveY - offsetY;
+
+            if (isMobile) {
+                // Define boundaries to prevent modal from going off-screen on mobile
+                const maxLeft = window.innerWidth - modalWidth - 20; // 20px padding on the right
+                const maxTop = window.innerHeight - modalHeight - 20; // 20px padding at the bottom
+
+                // Clamp the positions within the viewport
+                newLeft = Math.max(10, Math.min(newLeft, maxLeft)); // 10px padding on the left
+                newTop = Math.max(10, Math.min(newTop, maxTop)); // 10px padding at the top
+            }
+
             // Update modal position
-            modal.style.left = `${moveX - offsetX}px`;
-            modal.style.top = `${moveY - offsetY}px`;
+            modal.style.left = `${newLeft}px`;
+            modal.style.top = `${newTop}px`;
         };
 
         // Define the stop dragging handler
@@ -197,6 +231,7 @@ const ModalWindow = ({
         }
     };
 
+    // Styles for the main content area
     const mainAreaStyles = {
         flex: 1,
         overflow: "auto",
@@ -208,6 +243,7 @@ const ModalWindow = ({
         ...customStyles.main,
     };
 
+    // Handle maximize/restore functionality
     const handleMaximizeToggle = () => {
         const toggledMaximized = !isMaximized;
         setIsMaximized(toggledMaximized);
@@ -217,26 +253,28 @@ const ModalWindow = ({
         }
 
         if (toggledMaximized) {
-            setModalWidth(window.innerWidth - 20); // Max width with padding
-            setModalHeight(window.innerHeight - 20); // Max height with padding
+            setModalWidth(window.innerWidth - 40); // Max width with 20px padding on each side
+            setModalHeight(window.innerHeight - 40); // Max height with 20px padding on top and bottom
             if (modalRef.current) {
-                modalRef.current.style.top = "10px";
-                modalRef.current.style.left = "10px";
+                modalRef.current.style.top = "20px";
+                modalRef.current.style.left = "20px";
             }
         } else {
-            setModalWidth(isMobile ? 300 : 450); // Reset to default width based on device
-            setModalHeight(isMobile ? 300 : 450); // Reset to default height based on device
+            setModalWidth(isMobile ? 200 : 500); // Reset to default width based on device
+            setModalHeight(isMobile ? 200 : 500); // Reset to default height based on device
             if (modalRef.current) {
+                const { topOffset, leftOffset } = calculateOffset();
                 modalRef.current.style.top = isMobile
-                    ? "calc(50vh - 150px)" // Center vertically for mobile
-                    : "calc(50vh - 225px)"; // Center vertically for desktop
+                    ? `calc(50vh - 100px) + ${topOffset}px` // Center vertically for mobile
+                    : `calc(50vh - 250px) + ${topOffset}px`; // Center vertically for desktop
                 modalRef.current.style.left = isMobile
-                    ? "calc(50vw - 150px)" // Center horizontally for mobile
-                    : "calc(50vw - 225px)"; // Center horizontally for desktop
+                    ? `calc(50vw - 100px) + ${leftOffset}px` // Center horizontally for mobile
+                    : `calc(50vw - 250px) + ${leftOffset}px`; // Center horizontally for desktop
             }
         }
     };
 
+    // Render nothing if the modal is not visible
     if (!isVisible) return null;
 
     return (
@@ -244,23 +282,33 @@ const ModalWindow = ({
             ref={modalRef}
             style={{
                 position: "absolute",
-                
-                top: isMaximized ? "10px" : "calc(50vh - 225px)", // 450px height / 2
-                left: isMaximized ? "10px" : "calc(50vw - 225px)", // 450px width / 2
+                top: isMaximized
+                    ? "20px"
+                    : isMobile
+                        ? `calc(50vh - 100px) + ${topOffset}px` // Center vertically for mobile with offset
+                        : `calc(50vh - 250px) + ${topOffset}px`, // Center vertically for desktop with offset
+                left: isMaximized
+                    ? "20px"
+                    : isMobile
+                        ? `calc(50vw - 100px) + ${leftOffset}px` // Center horizontally for mobile with offset
+                        : `calc(50vw - 250px) + ${leftOffset}px`, // Center horizontally for desktop with offset
                 width: `${modalWidth}px`,
-                height: `${isMaximized ? `calc(100vh - 20px)` : `${modalHeight}px`}`,
+                height: `${isMaximized ? `calc(100vh - 40px)` : `${modalHeight}px`}`, // Adjusted for padding when maximized
                 backgroundColor: "#fff",
                 border: "2px solid black",
                 display: isVisible ? "flex" : "none",
                 flexDirection: "column",
-                zIndex: zIndex,
-                overflow:"hidden",
+                zIndex: zIndex + stackIndex, // Higher zIndex for higher stackIndex
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: "5px",
+                overflow: "hidden",
                 ...customStyles.container,
             }}
             onMouseDown={handleMouseDown}
-            onTouchStart={handleMouseDown} // Added touch event handler for dragging
+            onTouchStart={handleMouseDown}
         >
 
+            {/* Title Bar */}
             <div
                 className="modal-titlebar"
                 style={{
@@ -277,15 +325,16 @@ const ModalWindow = ({
                     ...customStyles.titleBar,
                 }}
                 onMouseDown={handleMouseDown}
-                onTouchStart={handleMouseDown} // Added touch event handler for dragging
+                onTouchStart={handleMouseDown}
             >
+                {/* Custom Title Bar or Default Title */}
                 {customTitleBar ? customTitleBar : <span>{title}</span>}
                 <div style={{ display: "flex", gap: "5px" }}>
                     {/* Minimize Button */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (onMinimize) onMinimize(); // Call the minimize handler
+                            if (onMinimize) onMinimize();
                         }}
                         style={{
                             background: "none",
@@ -316,7 +365,7 @@ const ModalWindow = ({
                         }}
                         title={isMaximized ? "Restore" : "Maximize"}
                     >
-                        &#10066;
+                        {isMaximized ? "🗗" : "🗖"}
                     </button>
 
                     {/* Close Button */}
@@ -340,6 +389,7 @@ const ModalWindow = ({
                 </div>
             </div>
 
+            {/* Menu Bar */}
             {showMenuBar && (
                 <div
                     style={{
@@ -363,8 +413,10 @@ const ModalWindow = ({
                 </div>
             )}
 
+            {/* Main Content Area */}
             <div style={mainAreaStyles}>{content}</div>
 
+            {/* Status Bar */}
             {showStatusBar && (
                 <div
                     style={{
@@ -390,10 +442,11 @@ const ModalWindow = ({
                 </div>
             )}
 
+            {/* Resize Handle */}
             {!isMaximized && (
                 <div
                     onMouseDown={startResizing}
-                    onTouchStart={startResizing} // Added touch event handler for resizing
+                    onTouchStart={startResizing}
                     style={{
                         width: "15px",
                         height: "15px",
@@ -408,7 +461,6 @@ const ModalWindow = ({
                 ></div>
             )}
         </div>
-        )
-    };
-
+    );
+}
 export default ModalWindow;

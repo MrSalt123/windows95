@@ -143,15 +143,13 @@ const App = () => {
                 {/* Wallpaper */}
                 <img
                     src={bgImage}
-                    className="absolute top-1/2 left-1/2 w-[22%] min-w-[300px] transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute top-1/2 left-1/2 w-[22%] min-w-[130px] transform -translate-x-1/2 -translate-y-1/2"
                     alt="background"
                 />
 
                 {/* Desktop Icons */}
                 <div className="absolute top-[2%] left-[1vw] text-white text-center flex flex-col gap-5"
-                    style={{
-                        height: "auto",
-                    }}>
+>
 
                     {desktopItems.map((item) => (
                         <div
@@ -160,7 +158,11 @@ const App = () => {
                             onClick={() => handleIconClick(item.id)}
                         >
                             <img
+                                style={{
+                                    width: "3.3dvw",
+                                    height: "auto"
 
+                                }}
                                 src={item.icon}
                                 alt={`${item.name} Icon`}
                                 className="h-[7vh] w-[7vh] min-w-[35px] min-h-[35px]"
@@ -195,8 +197,8 @@ const App = () => {
 
                     // Adjust modal dimensions for smaller screens
                     const isMobile = windowWidth <= 768;
-                    const modalWidth = isMobile ? 300 : 450; // 90% width for mobile, 450px for desktop
-                    const modalHeight = isMobile ? 300 : 450; // 80% height for mobile, 450px for desktop
+                    const modalWidth = isMobile ? 200 : 350; // 90% width for mobile, 450px for desktop
+                    const modalHeight = isMobile ? 200 : 350; // 80% height for mobile, 450px for desktop
 
                     // Dynamically calculate position for both mobile and desktop
                     const topPosition = isMobile

@@ -79,7 +79,7 @@ const TopIndicators = () => {
                     gap: '10px',
                 }}
             >
-                <span style={{ fontSize: '1.1rem', color: 'white', fontWeight: "lighter" }}>
+                <span style={{ fontSize: '0.9rem', color: 'white', fontWeight: "lighter" }}>
                     {price}
                 </span>
                 {!error && (
@@ -107,9 +107,10 @@ const TopIndicators = () => {
                     style={{
                         color: "white",
                         fontWeight: "bold",
-                        fontSize: '1.0rem',
-                        height: '30px',
-                        width: "70px",
+                        fontSize: '0.9rem',
+                        height: '24px',
+                        width: "100%",
+                        minWidth: "40px",
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'

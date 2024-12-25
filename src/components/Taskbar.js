@@ -1,3 +1,7 @@
+/***************************************************************************
+ *                           TASKBAR COMPONENT
+ * Renders the taskbar with Start button, search bar, open modals, and clock.
+ ***************************************************************************/
 import React from "react";
 import { Button, TextInput } from "react95";
 import win95Logo from "../assets/images/win95.png";
@@ -20,18 +24,19 @@ const Taskbar = ({
     return (
         <div
             style={{
-                zIndex: "1000",
+                zIndex: 1000,
                 position: "fixed",
                 bottom: "0px",
-                width: "100%",
-                height: "4vh",
-                minHeight: "40px",
+                width: "100vw",
+                height: "5%",
+                minHeight: "20px",
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "space-between",
                 backgroundColor: "#c0c0c0",
                 borderTop: "2px solid #ffffff",
                 borderBottom: "2px solid #808080",
-                padding: "5px, 1px",
+                padding: "2px 10px", // Corrected padding format
             }}
         >
             {/* Start Button & Search */}
@@ -50,57 +55,70 @@ const Taskbar = ({
                     }}
                     active={false}
                     style={{
+                        height:"90%",
                         fontWeight: "bold",
-                        height: "90%",
                         border: "none",
                         backgroundColor: "transparent",
-                        left: "5px",
-                        width: "100%",
-                        minWidth: "50px",
+                        width: "auto", // Adjusted to fit content
                         display: "flex",
-                        marginRight:"10px" 
+                        alignItems: "center",
+                        padding: "0 10px",
+                        cursor: "pointer",
                     }}
                 >
                     <img
                         src={win95Logo}
                         alt="Start Icon"
                         style={{
-                            minWidth: "35px",
-                            height: "80%",
-                            minHeight: "20px",
-                            marginRight: "10px",
+                            width: "70%", // Adjusted size for consistency
+                            marginRight: "5px",
                         }}
                     />
                     {windowWidth > 1200 && (
-                        <p style={{ fontSize: "1.2rem" }}>Start</p>
+                        <span style={{ fontSize: "1rem" }}>Start</span>
                     )}
                 </Button>
 
-                {startMenuOpen && <StartMenu ref={menuRef} handleIconClick={handleIconClick} />}
-
-                {windowWidth >= 600 && (
-                    <TextInput
-                        variant="flat"
-                        placeholder="Search..."
-                        width={200}
-                        style={{
-                            height: "90%",
-                            width: "18dvw",
-                            visibility: "hidden",
-                            display: "none",
-                        }}
+                {startMenuOpen && (
+                    <StartMenu
+                        ref={menuRef}
+                        handleIconClick={handleIconClick}
+                        desktopItems={desktopItems}
                     />
+                )}
+
+                {/* Search Bar: Visible only on desktop (windowWidth >= 600) */}
+                {windowWidth >= 600 && (
+                    <div>
+                    <TextInput
+                        style={{
+                            position: "relative",
+                            top: 0,
+                            border: "none",
+                            backgroundColor: "transparent",
+                            alignItems: "center",
+                            padding: "0 5px",
+                            cursor: "pointer",
+                            backgroundColor: "white"
+                        }}
+                        placeholder="Search..."
+
+                    />
+                    </div>
+
                 )}
             </div>
 
             {/* Taskbar Tabs (Modals) */}
             <div
                 style={{
+                    height: "90%",
                     display: "flex",
                     alignItems: "center",
                     margin: "0px 5px",
                     gap: "5px",
                     flex: 1,
+                    overflowX: "auto", // Added scroll for overflow
                 }}
             >
                 {Object.keys(openModals).map((key) => {
@@ -120,15 +138,15 @@ const Taskbar = ({
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                height: "100%",
-                                top: "1px",
-                                width: "13vw",
+                                height:"100%",
+                                width: "16.66%",
                                 minWidth: "60px",
                                 backgroundColor: "#c0c0c0",
-                                border: "3px inset #e6e6e6",
                                 boxShadow: "inset 1px 1px 3px #000000",
                                 fontFamily: "ms_sans_serif",
                                 cursor: "pointer",
+                                overflow: "hidden",
+                                
                             }}
                         >
                             {/* Taskbar Tab Button */}
@@ -145,11 +163,11 @@ const Taskbar = ({
                                     bringToFront(key); // Bring the modal to the front
                                 }}
                                 style={{
+                                    height:"90%",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
                                     width: "100%",
-                                    height: "100%",
                                     backgroundColor: "transparent",
                                     border: "none",
                                     cursor: "pointer",
@@ -159,11 +177,14 @@ const Taskbar = ({
                                     src={desktopItem.icon}
                                     alt={`${desktopItem.name} Icon`}
                                     style={{
-                                        height: "24px",
-                                        marginRight: windowWidth > 1200 ? "10px" : "0px",
+                                        height: "20px",
+                                        width: "20px",
+                                        marginRight: windowWidth > 1200 ? "5px" : "0px",
                                     }}
                                 />
-                                {windowWidth > 1200 && desktopItem.name}
+                                {windowWidth > 1200 && (
+                                    <span style={{ fontSize: "0.9rem" }}>{desktopItem.name}</span>
+                                )}
                             </Button>
 
                             {/* Close Button */}
@@ -174,16 +195,17 @@ const Taskbar = ({
                                 }}
                                 style={{
                                     position: "absolute",
-                                    top: "10%",
-                                    right: "5%",
+                                    top: "2px",
+                                    right: "5px",
                                     height: "16px",
                                     width: "16px",
                                     color: "black",
                                     border: "none",
                                     borderRadius: "50%",
-                                    fontSize: "12px",
+                                    fontSize: "10px",
                                     cursor: "pointer",
                                 }}
+                                title="Close"
                             >
                                 ✕
                             </button>
@@ -196,10 +218,10 @@ const Taskbar = ({
             <div style={{ paddingRight: "4px" }}>
                 <div
                     style={{
-                        height: "100%",
+                        height:"90%",
                         width: "5vw",
-                        minWidth: "80px",
-                        fontSize: "1.1rem",
+                        minWidth: "50px",
+                        fontSize: "0.9rem",
                         backgroundColor: "#c0c0c0",
                         border: "3px inset #e6e6e6",
                         boxShadow: "inset 1px 1px 3px #000000",
@@ -216,5 +238,4 @@ const Taskbar = ({
         </div>
     );
 };
-
-export default Taskbar;
+    export default Taskbar;
