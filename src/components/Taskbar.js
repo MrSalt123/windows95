@@ -28,7 +28,7 @@ const Taskbar = ({
                 position: "fixed",
                 bottom: "0px",
                 width: "100vw",
-                height: "5%",
+                height: "4.3vh",
                 minHeight: "20px",
                 display: "flex",
                 alignItems: "center",
@@ -36,15 +36,18 @@ const Taskbar = ({
                 backgroundColor: "#c0c0c0",
                 borderTop: "2px solid #ffffff",
                 borderBottom: "2px solid #808080",
-                padding: "2px 10px", // Corrected padding format
+                padding: "1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             px 2px",
             }}
         >
             {/* Start Button & Search */}
             <div
                 style={{
+                    height: "90%",
                     display: "flex",
                     alignItems: "center",
-                    gap: "10px",
+                    margin: "0px 5px",
+                    gap: "5px",
+
                 }}
             >
                 <Button
@@ -55,11 +58,10 @@ const Taskbar = ({
                     }}
                     active={false}
                     style={{
-                        height:"90%",
+                        height:"100%",
                         fontWeight: "bold",
                         border: "none",
                         backgroundColor: "transparent",
-                        width: "auto", // Adjusted to fit content
                         display: "flex",
                         alignItems: "center",
                         padding: "0 10px",
@@ -70,7 +72,8 @@ const Taskbar = ({
                         src={win95Logo}
                         alt="Start Icon"
                         style={{
-                            width: "70%", // Adjusted size for consistency
+                            width: "30%", // Adjusted size for consistency
+                            minWidth:"20px",
                             marginRight: "5px",
                         }}
                     />
@@ -88,24 +91,35 @@ const Taskbar = ({
                 )}
 
                 {/* Search Bar: Visible only on desktop (windowWidth >= 600) */}
+                {/* Search Bar: Visible only on desktop (windowWidth >= 600) */}
                 {windowWidth >= 600 && (
-                    <div>
-                    <TextInput
+                    <div
                         style={{
-                            position: "relative",
-                            top: 0,
-                            border: "none",
-                            backgroundColor: "transparent",
+                            height: "100%", // Ensures the wrapper div takes full height
+                            display: "flex",
                             alignItems: "center",
-                            padding: "0 5px",
-                            cursor: "pointer",
-                            backgroundColor: "white"
                         }}
-                        placeholder="Search..."
-
-                    />
+                    >
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            style={{
+                                height: "90%", // Desired height
+                                width: "200px",
+                                outline: "none",
+                                border: "1px solid #808080",
+                                padding: "2px",
+                                fontSize: "0.9rem",
+                                borderTop: "2px solid #FFFFFF",
+                                borderLeft: "2px solid #FFFFFF",
+                                borderBottom: "2px solid #black",
+                                borderRight: "2px solid #808080",
+                                backgroundColor: "white",
+                                cursor: "text",
+                                boxSizing: "border-box",
+                            }}
+                        />
                     </div>
-
                 )}
             </div>
 
@@ -163,11 +177,11 @@ const Taskbar = ({
                                     bringToFront(key); // Bring the modal to the front
                                 }}
                                 style={{
+                                    width: "100%",
                                     height:"90%",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    width: "100%",
                                     backgroundColor: "transparent",
                                     border: "none",
                                     cursor: "pointer",
