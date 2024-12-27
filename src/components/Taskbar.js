@@ -28,7 +28,7 @@ const Taskbar = ({
                 position: "fixed",
                 bottom: "0px",
                 width: "100vw",
-                height: "4.3vh",
+                height: "4.8vh",
                 minHeight: "20px",
                 display: "flex",
                 alignItems: "center",
@@ -229,10 +229,10 @@ const Taskbar = ({
             </div>
 
             {/* Clock */}
-            <div style={{ paddingRight: "4px" }}>
+            <div style={{ paddingRight: "4px", height:"100%" }}>
                 <div
                     style={{
-                        height:"90%",
+                        height:"100%",
                         width: "5vw",
                         minWidth: "50px",
                         fontSize: "0.9rem",

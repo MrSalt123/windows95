@@ -6,6 +6,7 @@ import roadmap from "../assets/images/roadmap.png";
 import chart from "../assets/images/chart-ico.png";
 import folderIco from "../assets/images/folderIco.png";
 import MusicFolderContent from "../utils/musicFolder";
+// import commands from "../path/to/commands.js"; // Adjust the path accordingly
 
 
 const msPaintMenuBar = (
@@ -136,15 +137,25 @@ const desktopItems = [
         content: (
             <>
                 <p style={{ lineHeight: "1.5", color: "black" }}>
-                    The Windows95 Token is a tribute to the charm of simplicity and nostalgia, a digital reminder of a time when computing was excitingly fresh, yet delightfully uncomplicated. This token encapsulates the essence of the mid-90s tech era: the sound of a dial-up connection, the iconic startup chime, and the thrill of discovering the endless possibilities of a personal computer for the first time.
-                </p>
-                <br></br>
-                <p style={{ lineHeight: "1.5", color: "black" }}>
-                    In a world rapidly advancing with AI-driven coins and high-tech innovation, Windows95 Token offers a breath of fresh air—proof that sometimes, less is more. It's a celebration of clean interfaces, straightforward functionality, and the joy of exploration without overwhelming complexity.
-                </p>
-                <br></br>
-                <p style={{ lineHeight: "1.5", color: "black" }}>
-                    It’s not just a cryptocurrency; it’s a movement that reminds us to embrace simplicity, appreciate history, and find innovation in nostalgia. Experience a time when every pixel had meaning, and let Windows95 Token refresh your perspective in the digital revolution.
+                Welcome to $WINDOWS95, the memecoin revolution inspired by the iconic era of 1995. Born from a
+                 passion for nostalgia and driven by an empowered community, $WINDOWS95 is more than just a token—it’s a movement.
+
+                Our mission is simple: Reboot the Past - Aim for the Moon. We combine the retro vibes of the 90s with the limitless possibilities of Web3, creating a unique blend of fun, innovation, and collective growth.
+                <br></br><br></br>
+                What Makes Us Different?
+                 Community First: $WINDOWS95 is fully community-driven. Every decision, every milestone, and every moonshot is powered by 95ers.
+                <br></br><br></br>
+                
+                 Nostalgia Meets Innovation: We bring the charm of retro computing into the future of cryptocurrency. Think floppy disks, Clippy, and the Blue Screen—but on the blockchain.
+                <br></br><br></br>
+
+                 Cult Energy: This isn’t just a project—it’s a cult of like-minded individuals ready to make history.
+                <br></br><br></br>
+
+                Join the Movement
+                Whether you’re here for the memes, the nostalgia, or the potential, $WINDOWS95 is your chance to be part of something iconic. Together, we’re creating more than a token—we’re creating a legacy.
+
+                #95ers | #Windows95Cult | #RebootThePast
                 </p>
             </>
         ),
