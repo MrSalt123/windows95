@@ -187,9 +187,7 @@ const desktopItems = [
                 >
                     <img src={roadmap} alt="Roadmap" style={{
                         position: "relative",
-                        left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%)"
+
 
                     }} />
                 </div>
@@ -250,22 +248,22 @@ const desktopItems = [
         },
     },
 
-    {
-        id: "files",
-        name: "Files",
-        icon: folderIco,
-        content: <MusicFolderContent />,
-        title: "Music - Folder",
-        showMenuBar: false,
-        showStatusBar: false,
-        customStyles: {
-            main: {
-                backgroundColor: "#f0f0f0",
-                color: "black",
-                padding: "10px",
-            },
-        },
-    },
+    // {
+    //     id: "files",
+    //     name: "Files",
+    //     icon: folderIco,
+    //     content: <MusicFolderContent />,
+    //     title: "Music - Folder",
+    //     showMenuBar: false,
+    //     showStatusBar: false,
+    //     customStyles: {
+    //         main: {
+    //             backgroundColor: "#f0f0f0",
+    //             color: "black",
+    //             padding: "10px",
+    //         },
+    //     },
+    // },
 
     
 ];

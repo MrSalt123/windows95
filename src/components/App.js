@@ -159,7 +159,7 @@ const App = () => {
                         >
                             <img
                                 style={{
-                                    width: "3.3dvw",
+                                    width: "2.7dvw",
                                     height: "auto"
 
                                 }}
@@ -168,7 +168,7 @@ const App = () => {
                                 className="h-[7vh] w-[7vh] min-w-[35px] min-h-[35px]"
 
                             />
-                            <span className="text-[0.6rem]">{item.name}</span>
+                            <span className="text-[0.7rem]">{item.name}</span>
                         </div>
                     ))}
                 </div>
