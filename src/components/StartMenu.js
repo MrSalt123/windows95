@@ -160,8 +160,8 @@ const StartMenu = React.forwardRef(({ handleIconClick }, ref) => (
                     src={instaIco}
                     style={{
                         position: "absolute",
-                        width: "30px",
-                        left: "13px",
+                        width: "26px",
+                        left: "15px",
                         top: "50%",
                         transform: "translateY(-50%)",
                     }}

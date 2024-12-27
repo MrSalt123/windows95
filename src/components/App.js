@@ -2,15 +2,14 @@
  *                           IMPORTS & GLOBAL SETUP
  ***************************************************************************/
 import React, { useState, useEffect, useRef } from "react";
-import GlobalStyles from "../styles/GlobalStyles"; // Styling for font, cursor, etc.
-import { ThemeProvider } from "styled-components"; // Theme for components
-import TopIndicators from "./TopIndicators"; // CA + current token price
-import ModalWindow from "./ModalWindow"; // Modal Window for notepad, terminal, paint
-import desktopItems from "./DesktopItems"; // Desktop Icons
-import Taskbar from "./Taskbar"; // New component for taskbar
-
-import bgImage from "../assets/images/windows95bglogo.png"; // Background
-import original from "react95/dist/themes/original"; // Theme
+import GlobalStyles from "../styles/GlobalStyles"; 
+import { ThemeProvider } from "styled-components";
+import TopIndicators from "./TopIndicators"; 
+import ModalWindow from "./ModalWindow"; 
+import desktopItems from "./DesktopItems"; 
+import Taskbar from "./Taskbar"; 
+import bgImage from "../assets/images/windows95bglogo.png"; 
+import original from "react95/dist/themes/original";
 
 /***************************************************************************
  * MAIN APP COMPONENT
@@ -21,51 +20,62 @@ const App = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const menuRef = useRef(null);
-    const startButtonRef = useRef(null); // Reference for Start button
+    const startButtonRef = useRef(null);
 
     const isMobile = windowWidth <= 768;
-
-    // Header height to prevent modal overlap
     const headerHeight = 40;
 
-    // Initialize modal states for desktop items
+    // Build an object that tracks open/closed state for each desktop item
     const initialState = {};
     desktopItems.forEach((item) => {
         initialState[item.id] = {
             isOpen: false,
             isVisible: false,
             isMaximized: false,
+            offset: 0, // We'll store the per-modal offset here
         };
     });
     const [openModals, setOpenModals] = useState(initialState);
+
+    // Keep track of a zOrder array so we can bring modals to front
     const [zOrder, setZOrder] = useState([]);
 
+    /**
+     * handleIconClick:
+     * Previously you had an if-check that prevented opening a modal
+     * if it was already open. That also meant no new offset. 
+     * Removing that check => multiple modals can open & keep stacking.
+     */
     const handleIconClick = (id) => {
-        if (openModals[id]?.isOpen) {
-            // Do nothing if the modal is already open
-            return;
-        }
-        const openModalCount = Object.values(openModals).filter(modal => modal.isOpen).length;
+        // Count how many modals are currently open
+        const openModalCount = Object.values(openModals).filter((modal) => modal.isOpen).length;
+
+        // Assign the next offset = (# currently open) * 20
+        const newOffset = openModalCount * 20;
+
+        // Now open or re-open the modal, and store that new offset
         setOpenModals((prev) => ({
             ...prev,
             [id]: {
                 ...prev[id],
                 isOpen: true,
                 isVisible: true,
-                offset: openModalCount * 20, // Assign current global offset to the modal
+                isMaximized: false,
+                offset: newOffset,
             },
         }));
         bringToFront(id);
-        // setGlobalOffset((prev) => prev + 20); // Increment system-wide offset for the next modal
     };
 
+    // Bring the given modal to front by adjusting zOrder
     const bringToFront = (id) => {
         setZOrder((prev) => {
-            const newOrder = prev.filter((modalId) => modalId !== id); // Remove the clicked modal
-            return [...newOrder, id]; // Add it to the end
+            const newOrder = prev.filter((modalId) => modalId !== id);
+            return [...newOrder, id];
         });
     };
 
+    // Minimizing => isVisible=false (still open in background)
     const handleMinimize = (id) => {
         setOpenModals((prev) => ({
             ...prev,
@@ -73,6 +83,7 @@ const App = () => {
         }));
     };
 
+    // Full close => isOpen=false, not visible, not maximized
     const closeModal = (id) => {
         setOpenModals((prev) => ({
             ...prev,
@@ -81,6 +92,7 @@ const App = () => {
         setZOrder((prev) => prev.filter((modalId) => modalId !== id));
     };
 
+    // Toggle the maximize state
     const toggleMaximize = (id) => {
         setOpenModals((prev) => ({
             ...prev,
@@ -88,12 +100,12 @@ const App = () => {
         }));
     };
 
+    // Initialize zOrder with all desktop item IDs once on mount
     useEffect(() => {
         if (zOrder.length === 0) {
-            // Initialize zOrder based on desktop items
             setZOrder(desktopItems.map((item) => item.id));
         }
-    }, []);
+    }, [zOrder.length]);
 
     // Update clock every second
     useEffect(() => {
@@ -106,7 +118,7 @@ const App = () => {
         return () => clearInterval(interval);
     }, []);
 
-    // Close start menu when clicking outside
+    // Close Start menu if user clicks outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -126,7 +138,7 @@ const App = () => {
         };
     }, [startMenuOpen]);
 
-    // Track window width changes
+    // Track window size changes
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener("resize", handleResize);
@@ -137,7 +149,7 @@ const App = () => {
         <div>
             <GlobalStyles />
             <ThemeProvider theme={original}>
-                {/* TOP INDICATORS: Mint Price & Contract */}
+                {/* Top Indicators */}
                 <TopIndicators />
 
                 {/* Wallpaper */}
@@ -148,9 +160,7 @@ const App = () => {
                 />
 
                 {/* Desktop Icons */}
-                <div className="absolute top-[2%] left-[1vw] text-white text-center flex flex-col gap-5"
->
-
+                <div className="absolute top-[2%] left-[1vw] text-white text-center flex flex-col gap-5">
                     {desktopItems.map((item) => (
                         <div
                             key={item.id}
@@ -160,13 +170,11 @@ const App = () => {
                             <img
                                 style={{
                                     width: "2.7dvw",
-                                    height: "auto"
-
+                                    height: "auto",
                                 }}
                                 src={item.icon}
                                 alt={`${item.name} Icon`}
                                 className="h-[7vh] w-[7vh] min-w-[35px] min-h-[35px]"
-
                             />
                             <span className="text-[0.7rem]">{item.name}</span>
                         </div>
@@ -192,21 +200,16 @@ const App = () => {
                 {/* Render All Modals */}
                 {desktopItems.map((item) => {
                     const modalState = openModals[item.id];
-                    const zIndex = zOrder.indexOf(item.id) + 1;
-                    const offset = openModals[item.id]?.offset || 0;
+                    if (!modalState.isOpen) return null; // skip if not open
 
-                    // Adjust modal dimensions for smaller screens
+                    // Each modal's zIndex = its position in zOrder + 1 (just for layering)
+                    const modalZIndex = zOrder.indexOf(item.id) + 1;
+
+                    // Use the offset from openModals to stack
+                    const offset = modalState.offset || 0;
+
                     const isMobile = windowWidth <= 768;
-                    const modalWidth = isMobile ? 200 : 350; // 90% width for mobile, 450px for desktop
-                    const modalHeight = isMobile ? 200 : 350; // 80% height for mobile, 450px for desktop
 
-                    // Dynamically calculate position for both mobile and desktop
-                    const topPosition = isMobile
-                        ? (window.innerHeight - modalHeight) / 2 // Center vertically for mobile
-                        : `calc(${window.innerHeight / 2}px - ${modalHeight / 2}px + ${offset}px)`;
-                    const leftPosition = isMobile
-                        ? `${(window.innerWidth - modalWidth) / 2 + offset}px` // Center horizontally for mobile with offset
-                        : `calc(50vw - ${modalWidth / 2}px + ${offset}px)`;
                     return (
                         <ModalWindow
                             key={item.id}
@@ -221,29 +224,18 @@ const App = () => {
                             onMinimize={() => handleMinimize(item.id)}
                             onMaximizeToggle={() => toggleMaximize(item.id)}
                             onMouseDown={() => bringToFront(item.id)}
-                            zIndex={zIndex}
-                            customMenuBar={item.customMenuBar}
-                            customStatusBar={item.customStatusBar}
+                            zIndex={modalZIndex}
                             showMenuBar={item.showMenuBar}
                             showStatusBar={item.showStatusBar}
-                            customStyles={{
-                                container: modalState.isMaximized
-                                    ? {
-                                        top: "0px",
-                                        left: "0px",
-                                        width: "100vw",
-                                        height: `calc(100dvh - ${headerHeight}px)`,
-                                    }
-                                    : {
-                                        top: topPosition,
-                                        left: leftPosition,
-                                    },
-                            }}
+                            customMenuBar={item.customMenuBar}
+                            customStatusBar={item.customStatusBar}
+                            // We'll rely on the built-in offset logic from ModalWindow
+                            // by passing it the "stackIndex" derived from offset/20
+                            // so it can do the final calc in the "calc(50vw - ... )" code
+                            stackIndex={Math.round(offset / 20)}
                         />
                     );
                 })}
-
-
             </ThemeProvider>
         </div>
     );
