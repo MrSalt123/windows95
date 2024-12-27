@@ -414,6 +414,7 @@
              fontSize: "12px",
              color: "black",
              userSelect: "none",
+
              ...customStyles.statusBar,
            }}
          >

@@ -5,7 +5,7 @@ import globe from "../assets/images/globe.png";
 import roadmap from "../assets/images/roadmap.png";
 import chart from "../assets/images/chart-ico.png";
 import folderIco from "../assets/images/folderIco.png";
-import MusicFolderContent from "../utils/musicFolder";
+import MusicFolderContent from "../utils/musicFolder.js";
 // import commands from "../path/to/commands.js"; // Adjust the path accordingly
 
 
@@ -259,22 +259,22 @@ const desktopItems = [
         },
     },
 
-    // {
-    //     id: "files",
-    //     name: "Files",
-    //     icon: folderIco,
-    //     content: <MusicFolderContent />,
-    //     title: "Music - Folder",
-    //     showMenuBar: false,
-    //     showStatusBar: false,
-    //     customStyles: {
-    //         main: {
-    //             backgroundColor: "#f0f0f0",
-    //             color: "black",
-    //             padding: "10px",
-    //         },
-    //     },
-    // },
+    {
+        id: "files",
+        name: "Files",
+        icon: folderIco,
+        content: <MusicFolderContent />,
+        title: "Music - Folder",
+        showMenuBar: true,
+        showStatusBar: false,
+        customStyles: {
+            main: {
+                backgroundColor: "#f0f0f0",
+                color: "black",
+                padding: "10px",
+            },
+        },
+    },
 
     
 ];
